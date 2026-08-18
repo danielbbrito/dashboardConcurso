@@ -12,7 +12,11 @@ def compute_kpis(df):
     acertos_sem_chute = acertos - chutes_certos
     taxa_acerto = acertos / feitas if feitas else None
     taxa_acerto_seguro = (
-        (acertos - chutes_certos) / (feitas - chutes) if feitas - chutes > 0 else None
+        (acertos - chutes_certos) / feitas if feitas else None
+    )
+    base_nao_chutadas = feitas - chutes
+    taxa_acerto_nao_chutadas = (
+        (acertos - chutes_certos) / base_nao_chutadas if base_nao_chutadas > 0 else None
     )
     pct_chutes = chutes / feitas if feitas else None
     taxa_chute_certo = chutes_certos / chutes if chutes else None
@@ -28,6 +32,7 @@ def compute_kpis(df):
         "acertos_sem_chute": acertos_sem_chute,
         "taxa_acerto": taxa_acerto,
         "taxa_acerto_seguro": taxa_acerto_seguro,
+        "taxa_acerto_nao_chutadas": taxa_acerto_nao_chutadas,
         "pct_chutes": pct_chutes,
         "taxa_chute_certo": taxa_chute_certo,
         "nota_cebraspe": nota_cebraspe,
@@ -71,10 +76,61 @@ def serie_diaria(df):
     g["chutes_certos_acum"] = g["chutes_certos"].cumsum()
     g["taxa_acum"] = g["acertos_acum"] / g["feitas_acum"]
     g["nota_acum"] = g["acertos_acum"] - 0.5 * (g["feitas_acum"] - g["acertos_acum"])
-    g["taxa_acum_seguro"] = (g["acertos_acum"] - g["chutes_certos_acum"]) / (
-        g["feitas_acum"] - g["chutes_acum"]
-    )
+    g["taxa_acum_seguro"] = (g["acertos_acum"] - g["chutes_certos_acum"]) / g["feitas_acum"]
     return g[_COLS_SERIE]
+
+
+_COLS_SERIE_HORAS = ["data", "horas", "horas_acum"]
+
+
+def serie_horas_diaria(df):
+    if df.empty:
+        return pd.DataFrame(columns=_COLS_SERIE_HORAS)
+    g = (
+        df.groupby("data", as_index=False)["horas"]
+        .sum()
+        .sort_values("data")
+        .reset_index(drop=True)
+    )
+    g["horas_acum"] = g["horas"].cumsum()
+    return g[_COLS_SERIE_HORAS]
+
+
+def _inicio_semana(dt):
+    return dt - pd.to_timedelta(dt.dt.dayofweek, unit="D")
+
+
+def semanas_de(datas):
+    s = pd.to_datetime(list(datas)).to_series().reset_index(drop=True)
+    inicios = _inicio_semana(s)
+    semanas = sorted(set(inicios), reverse=True)
+    return [
+        (m.strftime("%Y-%m-%d"), (m + pd.Timedelta(days=6)).strftime("%Y-%m-%d"))
+        for m in semanas
+    ]
+
+
+_COLS_HORAS_SEMANA = ["semana_inicio", "data_fim", "horas", "dias", "media_dia"]
+
+
+def horas_por_semana(df):
+    if df.empty:
+        return pd.DataFrame(columns=_COLS_HORAS_SEMANA)
+    g = df.copy()
+    g["dt"] = pd.to_datetime(g["data"])
+    g["semana_inicio"] = _inicio_semana(g["dt"])
+    out = (
+        g.groupby("semana_inicio", as_index=False)
+        .agg(horas=("horas", "sum"), dias=("data", "nunique"))
+    )
+    out["data_fim"] = out["semana_inicio"] + pd.Timedelta(days=6)
+    out["media_dia"] = out["horas"] / out["dias"]
+    out["semana_inicio"] = out["semana_inicio"].dt.strftime("%Y-%m-%d")
+    out["data_fim"] = out["data_fim"].dt.strftime("%Y-%m-%d")
+    return (
+        out.sort_values("semana_inicio", ascending=False)
+        .reset_index(drop=True)[_COLS_HORAS_SEMANA]
+    )
 
 
 _COLS_RANKING = [
@@ -86,11 +142,12 @@ _COLS_RANKING = [
     "chutes",
     "chutes_certos",
     "taxa_acerto",
+    "taxa_acerto_seguro",
     "nota_cebraspe",
 ]
 
 
-def ranking(df, min_feitas=20):
+def ranking(df, min_feitas=20, metrica="taxa"):
     if df.empty:
         return pd.DataFrame(columns=_COLS_RANKING)
     g = (
@@ -103,11 +160,22 @@ def ranking(df, min_feitas=20):
         )
     )
     g["taxa_acerto"] = g["acertos"] / g["feitas"]
+    g["taxa_acerto_seguro"] = pd.Series(
+        [
+            (a - cc) / f if f > 0 else None
+            for a, cc, f in zip(g["acertos"], g["chutes_certos"], g["feitas"])
+        ],
+        dtype=object,
+    )
     g["nota_cebraspe"] = g["acertos"] - 0.5 * (g["feitas"] - g["acertos"])
     g = g[g["feitas"] >= min_feitas]
+    coluna = "taxa_acerto_seguro" if metrica == "taxa_segura" else "taxa_acerto"
     return (
-        g.sort_values(["taxa_acerto", "feitas", "nome"], ascending=[False, False, True])
-        .reset_index(drop=True)
+        g.sort_values(
+            [coluna, "feitas", "nome"],
+            ascending=[False, False, True],
+            na_position="last",
+        ).reset_index(drop=True)
     )
 
 

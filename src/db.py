@@ -44,6 +44,15 @@ CREATE TABLE IF NOT EXISTS anotacoes (
     texto         TEXT NOT NULL DEFAULT '',
     atualizado_em TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS horas_estudo (
+    id        INTEGER PRIMARY KEY,
+    data      TEXT NOT NULL,
+    horas     REAL NOT NULL CHECK (horas > 0 AND horas <= 24),
+    criado_em TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_horas_estudo_data ON horas_estudo(data);
 """
 
 

@@ -31,3 +31,13 @@ def get_anotacao(disciplina_id):
 @st.cache_data(ttl=60, show_spinner=False)
 def get_anotacao_atualizado_em(disciplina_id):
     return repository.get_anotacao_atualizado_em(disciplina_id)
+
+
+@st.cache_data(ttl=60, show_spinner=False)
+def list_horas(inicio=None, fim=None, limit=None):
+    return repository.list_horas(inicio, fim, limit)
+
+
+@st.cache_data(ttl=60, show_spinner=False)
+def agg_horas_por_dia(inicio=None, fim=None):
+    return repository.agg_horas_por_dia(inicio, fim)

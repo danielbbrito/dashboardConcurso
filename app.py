@@ -46,6 +46,8 @@ def _tabela_kpis_comparacao(res):
         {"Métrica": "Acertos sem chute", "Até A": str(ka["acertos_sem_chute"]), "Até B": str(kb["acertos_sem_chute"]), "Δ (B−A)": un(ka["acertos_sem_chute"], kb["acertos_sem_chute"])},
         {"Métrica": "Chutes", "Até A": str(ka["chutes"]), "Até B": str(kb["chutes"]), "Δ (B−A)": un(ka["chutes"], kb["chutes"])},
         {"Métrica": "Taxa de acerto", "Até A": pct(ka["taxa_acerto"]), "Até B": pct(kb["taxa_acerto"]), "Δ (B−A)": pp(ka["taxa_acerto"], kb["taxa_acerto"])},
+        {"Métrica": "Taxa sem chute", "Até A": pct(ka["taxa_acerto_seguro"]), "Até B": pct(kb["taxa_acerto_seguro"]), "Δ (B−A)": pp(ka["taxa_acerto_seguro"], kb["taxa_acerto_seguro"])},
+        {"Métrica": "Taxa (não chutadas)", "Até A": pct(ka["taxa_acerto_nao_chutadas"]), "Até B": pct(kb["taxa_acerto_nao_chutadas"]), "Δ (B−A)": pp(ka["taxa_acerto_nao_chutadas"], kb["taxa_acerto_nao_chutadas"])},
         {"Métrica": "Nota Cebraspe", "Até A": nota(ka["nota_cebraspe"]), "Até B": nota(kb["nota_cebraspe"]), "Δ (B−A)": _delta_nota(ka["nota_cebraspe"], kb["nota_cebraspe"])},
     ]
     return pd.DataFrame(linhas)
@@ -82,17 +84,31 @@ if df.empty:
 render_kpis(metrics.compute_kpis(df))
 
 st.subheader(":material/show_chart: Evolução no tempo")
-st.plotly_chart(charts.fig_evolucao(metrics.serie_diaria(df)), width="stretch")
-
-st.subheader(":material/leaderboard: Desempenho por disciplina")
 st.plotly_chart(
-    charts.fig_por_disciplina(cache.agg_por_disciplina(inicio, fim, disc_tuple)),
+    charts.fig_evolucao(metrics.serie_diaria(df), mostrar_taxa_segura=True),
     width="stretch",
 )
 
+st.subheader(":material/leaderboard: Desempenho por disciplina")
+agg_disc = cache.agg_por_disciplina(inicio, fim, disc_tuple)
+st.plotly_chart(charts.fig_por_disciplina(agg_disc), width="stretch")
+st.caption("Taxa de acerto = acertos / feitas")
+st.plotly_chart(
+    charts.fig_por_disciplina(agg_disc, metrica="taxa_segura"),
+    width="stretch",
+)
+st.caption("Taxa sem chute = (acertos − chutes certos) / feitas")
+
 st.subheader(":material/emoji_events: Ranking de disciplinas")
-min_feitas = st.slider("Volume mínimo de questões por disciplina", 0, 100, 20, key="vg_min")
-rank = metrics.ranking(df, min_feitas)
+col_metrica, col_min = st.columns([1, 2])
+metrica_escolha = col_metrica.selectbox(
+    "Métrica do ranking",
+    ["Taxa de acerto", "Taxa sem chute"],
+    key="vg_metrica_ranking",
+)
+min_feitas = col_min.slider("Volume mínimo de questões por disciplina", 0, 100, 20, key="vg_min")
+metrica = "taxa_segura" if metrica_escolha == "Taxa sem chute" else "taxa"
+rank = metrics.ranking(df, min_feitas, metrica=metrica)
 if rank.empty:
     st.info("Nenhuma disciplina atingiu o volume mínimo no recorte. Reduza o mínimo no controle acima.")
 else:
@@ -100,9 +116,17 @@ else:
     visao["#"] = range(1, len(visao) + 1)
     visao["bloco_label"] = visao["bloco"].map({"basico": "Básicos", "especifico": "Específicos"})
     visao["taxa_pct"] = visao["taxa_acerto"] * 100
+    visao["taxa_segura_pct"] = visao["taxa_acerto_seguro"].map(
+        lambda v: None if v is None or pd.isna(v) else v * 100
+    )
     visao["nota_fmt"] = visao["nota_cebraspe"].map(fmt_nota)
+    colunas_ranking = (
+        ["#", "nome", "bloco_label", "feitas", "acertos", "taxa_segura_pct", "taxa_pct", "nota_fmt"]
+        if metrica == "taxa_segura"
+        else ["#", "nome", "bloco_label", "feitas", "acertos", "taxa_pct", "taxa_segura_pct", "nota_fmt"]
+    )
     st.dataframe(
-        visao[["#", "nome", "bloco_label", "feitas", "acertos", "taxa_pct", "nota_fmt"]],
+        visao[colunas_ranking],
         width="stretch",
         hide_index=True,
         column_config={
@@ -114,13 +138,16 @@ else:
             "taxa_pct": st.column_config.ProgressColumn(
                 "Taxa de acerto", min_value=0, max_value=100, format="%.1f%%"
             ),
+            "taxa_segura_pct": st.column_config.ProgressColumn(
+                "Taxa sem chute", min_value=0, max_value=100, format="%.1f%%"
+            ),
             "nota_fmt": "Nota Cebraspe",
         },
     )
     ocultas = df["disciplina_id"].nunique() - len(rank)
     st.caption(
-        f"Ranking com volume mínimo de {min_feitas} questões por disciplina. "
-        f"{ocultas} disciplina(s) ocultada(s) abaixo do mínimo."
+        f"Ranking por {metrica_escolha.lower()} com volume mínimo de {min_feitas} "
+        f"questões por disciplina. {ocultas} disciplina(s) ocultada(s) abaixo do mínimo."
     )
 
 with st.expander(":material/compare_arrows: Comparar dois momentos", expanded=False):

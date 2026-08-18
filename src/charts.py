@@ -28,9 +28,9 @@ def _agregar_semanal(serie):
     sem["chutes_acum"] = sem["chutes"].cumsum()
     sem["chutes_certos_acum"] = sem["chutes_certos"].cumsum()
     sem["taxa_acum"] = sem["acertos_acum"] / sem["feitas_acum"]
-    sem["taxa_acum_seguro"] = (sem["acertos_acum"] - sem["chutes_certos_acum"]) / (
-        sem["feitas_acum"] - sem["chutes_acum"]
-    )
+    sem["taxa_acum_seguro"] = (
+        sem["acertos_acum"] - sem["chutes_certos_acum"]
+    ) / sem["feitas_acum"]
     sem["data"] = sem["dt"].dt.strftime("%Y-%m-%d")
     return sem
 
@@ -67,12 +67,12 @@ def fig_evolucao(serie, mostrar_taxa_segura=False):
         fig.add_scatter(
             x=x,
             y=serie["taxa_acum_seguro"] * 100,
-            name="Taxa segura acumulada",
+            name="Taxa sem chute acumulada",
             yaxis="y2",
             mode="lines+markers",
             line=dict(color=AZUL_500, width=2, dash="dot"),
             marker=dict(size=5),
-            hovertemplate="%{x}<br>Taxa segura: %{y:.1f}%<extra></extra>",
+            hovertemplate="%{x}<br>Taxa sem chute: %{y:.1f}%<extra></extra>",
         )
     fig.update_layout(
         bargap=0.25,
@@ -88,13 +88,57 @@ def fig_evolucao(serie, mostrar_taxa_segura=False):
     return fig
 
 
-def fig_por_disciplina(agg):
+def fig_evolucao_horas(serie):
+    if serie.empty:
+        return _figura_vazia()
+    x = serie["data"]
+    fig = go.Figure()
+    fig.add_bar(
+        x=x,
+        y=serie["horas"],
+        name="Horas por dia",
+        marker_color=AZUL_300,
+        hovertemplate="%{x}<br>Horas: %{y:.1f} h<extra></extra>",
+    )
+    fig.add_scatter(
+        x=x,
+        y=serie["horas_acum"],
+        name="Acumulado",
+        yaxis="y2",
+        mode="lines+markers",
+        line=dict(color=AZUL_800, width=2.5),
+        marker=dict(size=6),
+        hovertemplate="%{x}<br>Acumulado: %{y:.1f} h<extra></extra>",
+    )
+    fig.update_layout(
+        bargap=0.25,
+        yaxis=dict(title="Horas por dia"),
+        yaxis2=dict(
+            title="Horas acumuladas", overlaying="y", side="right", showgrid=False
+        ),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0),
+        hovermode="x unified",
+        height=360,
+        margin=dict(l=10, r=10, t=50, b=10),
+    )
+    return fig
+
+
+def fig_por_disciplina(agg, metrica="taxa"):
     if agg.empty:
         return _figura_vazia()
     df = agg.copy()
     df["taxa_acerto"] = df["acertos"] / df["feitas"]
-    df = df.sort_values("taxa_acerto", ascending=True)
+    df["acertos_sem_chute"] = df["acertos"] - df["chutes_certos"]
+    df["taxa_segura"] = df["acertos_sem_chute"] / df["feitas"]
+    usar_segura = metrica == "taxa_segura"
+    coluna = "taxa_segura" if usar_segura else "taxa_acerto"
+    titulo = "Taxa sem chute" if usar_segura else "Taxa de acerto"
+    num = "acertos_sem_chute" if usar_segura else "acertos"
+    df = df.sort_values(coluna, ascending=True)
     fig = go.Figure()
+    rotulo_contagem = "Sem chute/Feitas" if usar_segura else "Acertos/Feitas"
+    hover = f"%{{y}}<br>{titulo}: %{{x:.1%}}<br>{rotulo_contagem}: %{{customdata[0]}}/%{{customdata[1]}}<extra></extra>"
     for sub, nome, cor in (
         (df[df["bloco"] == "basico"], "Básicos", AZUL_500),
         (df[df["bloco"] == "especifico"], "Específicos", AZUL_800),
@@ -102,23 +146,23 @@ def fig_por_disciplina(agg):
         if sub.empty:
             continue
         fig.add_bar(
-            x=sub["taxa_acerto"],
+            x=sub[coluna],
             y=sub["nome"],
             orientation="h",
             name=nome,
             marker_color=cor,
-            customdata=[[a, f] for a, f in zip(sub["acertos"], sub["feitas"])],
+            customdata=[[a, f] for a, f in zip(sub[num], sub["feitas"])],
             text=[
                 f"{t:.1%}  ({a}/{f})"
-                for t, a, f in zip(sub["taxa_acerto"], sub["acertos"], sub["feitas"])
+                for t, a, f in zip(sub[coluna], sub[num], sub["feitas"])
             ],
             textposition="outside",
             cliponaxis=False,
-            hovertemplate="%{y}<br>Taxa de acerto: %{x:.1%}<br>Acertos/Feitas: %{customdata[0]}/%{customdata[1]}<extra></extra>",
+            hovertemplate=hover,
         )
     fig.add_vline(x=0.5, line_color=NEUTRO, line_dash="dot")
     fig.update_layout(
-        xaxis=dict(title="Taxa de acerto", tickformat=".0%", range=[0, 1]),
+        xaxis=dict(title=titulo, tickformat=".0%", range=[0, 1]),
         yaxis=dict(title=None),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0),
         height=max(320, 44 * len(df)),

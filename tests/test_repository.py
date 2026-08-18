@@ -101,6 +101,60 @@ def test_agg_por_disciplina(repo_db):
     assert l1["bloco"] == "basico"
 
 
+def test_horas_insert_list_delete(repo_db):
+    from src import repository
+
+    repository.insert_horas("2026-08-17", 2.5)
+    repository.insert_horas("2026-08-17", 1.0)
+    df = repository.list_horas()
+    assert len(df) == 2
+    assert df["horas"].sum() == pytest.approx(3.5)
+    agg = repository.agg_horas_por_dia()
+    assert len(agg) == 1
+    assert agg.iloc[0]["horas"] == pytest.approx(3.5)
+    repository.delete_horas(int(df.iloc[0]["id"]))
+    assert len(repository.list_horas()) == 1
+
+
+def test_agg_horas_filtro(repo_db):
+    from src import repository
+
+    repository.insert_horas("2026-08-01", 2.0)
+    repository.insert_horas("2026-08-10", 3.5)
+    df = repository.agg_horas_por_dia(inicio="2026-08-05", fim="2026-08-15")
+    assert len(df) == 1
+    assert df.iloc[0]["horas"] == pytest.approx(3.5)
+    df = repository.list_horas(inicio="2026-08-05", fim="2026-08-15")
+    assert len(df) == 1
+
+
+def test_horas_check_constraint(repo_db):
+    from src import repository
+
+    with pytest.raises(sqlite3.IntegrityError):
+        repository.insert_horas("2026-08-17", 0)
+    with pytest.raises(sqlite3.IntegrityError):
+        repository.insert_horas("2026-08-17", 25)
+
+
+def test_validar_horas():
+    from datetime import date, timedelta
+
+    from src import repository
+
+    hoje = date.today()
+    assert repository.validar_horas(hoje, 2.5) == []
+    assert repository.validar_horas(hoje + timedelta(days=1), 2) == [
+        "A data não pode ser no futuro."
+    ]
+    assert repository.validar_horas(hoje, 0) == ["As horas devem ser maiores que zero."]
+    assert repository.validar_horas(hoje, 25) == [
+        "As horas de um dia não podem passar de 24."
+    ]
+    assert repository.validar_horas(None, 2) == ["Informe uma data."]
+    assert repository.validar_horas(hoje, None) == ["Informe as horas estudadas."]
+
+
 def test_validar_registro():
     from datetime import date, timedelta
 

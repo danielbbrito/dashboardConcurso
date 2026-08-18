@@ -146,6 +146,72 @@ def save_anotacao(disciplina_id, texto):
         )
 
 
+def insert_horas(data, horas):
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO horas_estudo (data, horas) VALUES (?, ?)",
+            (data, horas),
+        )
+
+
+def delete_horas(horas_id):
+    with get_conn() as conn:
+        conn.execute("DELETE FROM horas_estudo WHERE id = ?", (int(horas_id),))
+
+
+def list_horas(inicio=None, fim=None, limit=None):
+    wheres, params = [], []
+    if inicio:
+        wheres.append("data >= ?")
+        params.append(inicio)
+    if fim:
+        wheres.append("data <= ?")
+        params.append(fim)
+    sql = "SELECT id, data, horas, criado_em FROM horas_estudo"
+    if wheres:
+        sql += " WHERE " + " AND ".join(wheres)
+    sql += " ORDER BY data DESC, id DESC"
+    if limit:
+        sql += " LIMIT ?"
+        params.append(limit)
+    with get_conn() as conn:
+        return query_df(conn, sql, params)
+
+
+def agg_horas_por_dia(inicio=None, fim=None):
+    wheres, params = [], []
+    if inicio:
+        wheres.append("data >= ?")
+        params.append(inicio)
+    if fim:
+        wheres.append("data <= ?")
+        params.append(fim)
+    sql = "SELECT data, SUM(horas) AS horas FROM horas_estudo"
+    if wheres:
+        sql += " WHERE " + " AND ".join(wheres)
+    sql += " GROUP BY data ORDER BY data"
+    with get_conn() as conn:
+        return query_df(conn, sql, params)
+
+
+def validar_horas(data, horas):
+    erros = []
+    if data is None:
+        erros.append("Informe uma data.")
+    elif isinstance(data, date) and data > date.today():
+        erros.append("A data não pode ser no futuro.")
+    try:
+        v = float(horas)
+    except (TypeError, ValueError):
+        erros.append("Informe as horas estudadas.")
+        return erros
+    if v <= 0:
+        erros.append("As horas devem ser maiores que zero.")
+    elif v > 24:
+        erros.append("As horas de um dia não podem passar de 24.")
+    return erros
+
+
 def _e_inteiro(v):
     try:
         return float(v).is_integer()

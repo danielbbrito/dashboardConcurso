@@ -83,6 +83,15 @@ def fmt_pp(v):
     return "—" if v is None else f"{v:+.1f} p.p.".replace(".", ",")
 
 
+def fmt_horas(v):
+    if v is None:
+        return "—"
+    try:
+        return f"{float(v):.1f} h".replace(".", ",")
+    except (TypeError, ValueError):
+        return "—"
+
+
 def fmt_data_iso(iso):
     try:
         return date.fromisoformat(iso).strftime("%d/%m/%Y")
@@ -91,20 +100,33 @@ def fmt_data_iso(iso):
 
 
 def render_kpis(k):
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
     chutes = str(k["chutes"])
     if k["pct_chutes"] is not None:
         chutes = f"{k['chutes']} ({fmt_pct(k['pct_chutes'])})"
-    c1.metric("Questões tentadas", k["feitas"], help="Total de questões resolvidas no recorte")
-    c2.metric("Acertos", k["acertos"], help="Questões respondidas corretamente")
-    c3.metric(
+
+    r1 = st.columns(4)
+    r1[0].metric("Questões tentadas", k["feitas"], help="Total de questões resolvidas no recorte")
+    r1[1].metric("Acertos", k["acertos"], help="Questões respondidas corretamente")
+    r1[2].metric(
         "Acertos sem chute",
         k["acertos_sem_chute"],
         help="Acertos que não vieram de chute (acertos − chutes certos)",
     )
-    c4.metric("Chutes", chutes, help="Questões respondidas sem segurança")
-    c5.metric("Taxa de acerto", fmt_pct(k["taxa_acerto"]), help="acertos / tentadas")
-    c6.metric(
+    r1[3].metric("Chutes", chutes, help="Questões respondidas sem segurança")
+
+    r2 = st.columns(4)
+    r2[0].metric("Taxa de acerto", fmt_pct(k["taxa_acerto"]), help="acertos / tentadas")
+    r2[1].metric(
+        "Taxa sem chute",
+        fmt_pct(k["taxa_acerto_seguro"]),
+        help="acertos sem chute / tentadas",
+    )
+    r2[2].metric(
+        "Taxa de acerto (não chutadas)",
+        fmt_pct(k["taxa_acerto_nao_chutadas"]),
+        help="acertos sem chute / (tentadas − chutes) — apenas questões respondidas sem chute",
+    )
+    r2[3].metric(
         "Nota líquida Cebraspe",
         fmt_nota(k["nota_cebraspe"]),
         help="acertos − 0,5 × erros (regra do edital)",
@@ -159,4 +181,39 @@ def render_tabela_registros_com_exclusao(df, key):
             repository.delete_registro(int(sel))
             st.cache_data.clear()
             st.session_state[f"_flash_{key}"] = f"Registro {sel} excluído."
+            st.rerun()
+
+
+def render_tabela_horas_com_exclusao(df, key):
+    flash = st.session_state.pop(f"_flash_{key}", None)
+    if flash:
+        st.success(flash)
+    if df is None or df.empty:
+        st.info("Nenhum registro de horas encontrado.")
+        return
+    visao = df.copy()
+    visao["data_fmt"] = visao["data"].map(fmt_data_iso)
+    visao["horas_fmt"] = visao["horas"].map(fmt_horas)
+    visao["criado_fmt"] = visao["criado_em"].str[:16]
+    st.dataframe(
+        visao[["id", "data_fmt", "horas_fmt", "criado_fmt"]],
+        width="stretch",
+        hide_index=True,
+        column_config={
+            "id": "ID",
+            "data_fmt": "Data",
+            "horas_fmt": "Horas",
+            "criado_fmt": "Registrado em",
+        },
+    )
+    with st.expander(":material/delete: Excluir registro de horas", expanded=False):
+        ids = visao["id"].tolist()
+        sel = st.selectbox("Registro (ID) a excluir", ids, key=f"{key}_del_sel")
+        conf = st.checkbox("Confirmo a exclusão", key=f"{key}_del_conf")
+        if st.button(
+            ":material/delete: Excluir", key=f"{key}_del_btn", type="secondary", disabled=not conf
+        ):
+            repository.delete_horas(int(sel))
+            st.cache_data.clear()
+            st.session_state[f"_flash_{key}"] = f"Registro de horas {sel} excluído."
             st.rerun()
