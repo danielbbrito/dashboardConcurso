@@ -2,5 +2,6 @@ streamlit>=1.44
 plotly>=5.20
 pandas>=2.0
 libsql-experimental>=0.0.55
+streamlit[auth]
 # dev:
 pytest>=8.0
