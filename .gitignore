@@ -1,0 +1,7 @@
+*.pdf
+data/
+.venv/
+__pycache__/
+.pytest_cache/
+.streamlit/secrets.toml
+/planos
