@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from contextlib import contextmanager
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -67,8 +68,16 @@ def get_conn():
         conn.close()
 
 
+def _normalizar(v):
+    if isinstance(v, date):
+        return v.isoformat()
+    return v
+
+
 def _params_tuple(params):
-    return tuple(params) if params else ()
+    if not params:
+        return ()
+    return tuple(_normalizar(v) for v in params)
 
 
 def query_rows(conn, sql, params=None):
