@@ -178,6 +178,69 @@ def list_horas(inicio=None, fim=None, limit=None):
         return query_df(conn, sql, params)
 
 
+def list_ciclo():
+    with get_conn() as conn:
+        return query_rows(
+            conn,
+            """
+            SELECT c.posicao, c.disciplina_id AS id, d.nome, d.bloco, c.horas
+            FROM ciclo_estudos c
+            JOIN disciplinas d ON d.id = c.disciplina_id
+            ORDER BY c.posicao
+            """,
+        )
+
+
+def save_ciclo_ordem(disciplina_ids):
+    """Reordena o ciclo preservando as horas alocadas; insere disciplinas novas com 1h."""
+    ids = [int(did) for did in disciplina_ids]
+    with get_conn() as conn:
+        if not ids:
+            conn.execute("DELETE FROM ciclo_estudos")
+            return
+        existentes = {
+            row[0] for row in conn.execute("SELECT disciplina_id FROM ciclo_estudos").fetchall()
+        }
+        conn.execute("UPDATE ciclo_estudos SET posicao = posicao + 1000000")
+        for pos, did in enumerate(ids, start=1):
+            if did in existentes:
+                conn.execute(
+                    "UPDATE ciclo_estudos SET posicao = ? WHERE disciplina_id = ?",
+                    (pos, did),
+                )
+            else:
+                conn.execute(
+                    "INSERT INTO ciclo_estudos (posicao, disciplina_id, horas) VALUES (?, ?, 1.0)",
+                    (pos, did),
+                )
+        ph = ", ".join("?" for _ in ids)
+        conn.execute(
+            f"DELETE FROM ciclo_estudos WHERE disciplina_id NOT IN ({ph})", tuple(ids)
+        )
+
+
+def save_ciclo_horas(horas_por_id, ordem_default=None):
+    """Atualiza as horas alocadas por disciplina; insere disciplinas que ainda não estão no ciclo."""
+    ordem_default = ordem_default or []
+    with get_conn() as conn:
+        existentes = {
+            row[0] for row in conn.execute("SELECT disciplina_id FROM ciclo_estudos").fetchall()
+        }
+        for did, horas in horas_por_id.items():
+            did = int(did)
+            if did in existentes:
+                conn.execute(
+                    "UPDATE ciclo_estudos SET horas = ? WHERE disciplina_id = ?",
+                    (float(horas), did),
+                )
+            elif ordem_default:
+                pos = ordem_default.index(did) + 1
+                conn.execute(
+                    "INSERT INTO ciclo_estudos (posicao, disciplina_id, horas) VALUES (?, ?, ?)",
+                    (pos, did, float(horas)),
+                )
+
+
 def agg_horas_por_dia(inicio=None, fim=None):
     wheres, params = [], []
     if inicio:

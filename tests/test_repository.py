@@ -155,6 +155,64 @@ def test_validar_horas():
     assert repository.validar_horas(hoje, None) == ["Informe as horas estudadas."]
 
 
+def test_ciclo_ordem_preserva_horas(repo_db):
+    from src import repository
+
+    assert repository.list_ciclo() == []
+    repository.save_ciclo_ordem([3, 1, 2])
+    ciclo = repository.list_ciclo()
+    assert [c["id"] for c in ciclo] == [3, 1, 2]
+    assert ciclo[0]["nome"] == "Direito Administrativo"
+    assert ciclo[0]["bloco"] == "basico"
+    assert ciclo[0]["horas"] == 1.0
+
+    repository.save_ciclo_horas({1: 6.0, 2: 3.0, 3: 4.5})
+    repository.save_ciclo_ordem([1, 3, 2])
+    ciclo = repository.list_ciclo()
+    assert [c["id"] for c in ciclo] == [1, 3, 2]
+    assert {c["id"]: c["horas"] for c in ciclo} == {1: 6.0, 3: 4.5, 2: 3.0}
+
+
+def test_ciclo_horas_upsert(repo_db):
+    from src import repository
+
+    repository.save_ciclo_horas({1: 5.0, 2: 2.5}, ordem_default=[1, 2, 3])
+    ciclo = repository.list_ciclo()
+    assert [c["id"] for c in ciclo] == [1, 2]
+    assert {c["id"]: c["horas"] for c in ciclo} == {1: 5.0, 2: 2.5}
+
+    repository.save_ciclo_horas({1: 6.0}, ordem_default=[1])
+    assert repository.list_ciclo()[0]["horas"] == 6.0
+
+
+def test_ciclo_migracao_coluna_horas(tmp_path, monkeypatch):
+    import sqlite3
+
+    import src.db as db
+
+    path = tmp_path / "mig.db"
+    conn = sqlite3.connect(str(path))
+    conn.execute(
+        "CREATE TABLE ciclo_estudos ("
+        " id INTEGER PRIMARY KEY,"
+        " posicao INTEGER NOT NULL UNIQUE,"
+        " disciplina_id INTEGER NOT NULL UNIQUE REFERENCES disciplinas(id))"
+    )
+    conn.execute("INSERT INTO ciclo_estudos (posicao, disciplina_id) VALUES (1, 1)")
+    conn.commit()
+    conn.close()
+
+    monkeypatch.setattr(db, "DB_PATH", str(path))
+    db.init_db()
+    with db.get_conn() as c:
+        colunas = {r[1] for r in c.execute("PRAGMA table_info(ciclo_estudos)")}
+        horas = c.execute(
+            "SELECT horas FROM ciclo_estudos WHERE disciplina_id = 1"
+        ).fetchone()[0]
+    assert "horas" in colunas
+    assert horas == 1.0
+
+
 def test_validar_registro():
     from datetime import date, timedelta
 

@@ -41,3 +41,8 @@ def list_horas(inicio=None, fim=None, limit=None):
 @st.cache_data(ttl=60, show_spinner=False)
 def agg_horas_por_dia(inicio=None, fim=None):
     return repository.agg_horas_por_dia(inicio, fim)
+
+
+@st.cache_data(ttl=60, show_spinner=False)
+def list_ciclo():
+    return repository.list_ciclo()

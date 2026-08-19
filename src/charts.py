@@ -171,6 +171,49 @@ def fig_por_disciplina(agg, metrica="taxa"):
     return fig
 
 
+def fig_ciclo(ciclo):
+    """Círculo do ciclo de estudos: cada disciplina é um setor proporcional às horas.
+
+    ciclo: lista de dicts {id, nome, bloco, horas} na ordem do ciclo.
+    """
+    if not ciclo:
+        return _figura_vazia("Sem disciplinas no ciclo para exibir.")
+    labels = [c["nome"] for c in ciclo]
+    values = [c["horas"] for c in ciclo]
+    blocos = ["Básicos" if c["bloco"] == "basico" else "Específicos" for c in ciclo]
+    total = sum(values)
+    fig = go.Figure(
+        go.Pie(
+            labels=labels,
+            values=values,
+            hole=0.55,
+            sort=False,
+            direction="clockwise",
+            rotation=90,
+            customdata=blocos,
+            textinfo="label+percent",
+            textposition="auto",
+            textfont=dict(size=11),
+            hovertemplate="%{label} (%{customdata})<br>%{value:.1f} h · %{percent}<extra></extra>",
+        )
+    )
+    fig.update_layout(
+        showlegend=False,
+        annotations=[
+            dict(
+                text=f"<b>{total:.0f} h</b><br>por ciclo",
+                x=0.5,
+                y=0.5,
+                showarrow=False,
+                font=dict(size=15),
+            )
+        ],
+        height=460,
+        margin=dict(l=10, r=10, t=30, b=10),
+    )
+    return fig
+
+
 def fig_comparacao(por_disciplina):
     if por_disciplina.empty:
         return _figura_vazia("Sem movimentação entre A e B para exibir.")

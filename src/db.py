@@ -53,6 +53,13 @@ CREATE TABLE IF NOT EXISTS horas_estudo (
 );
 
 CREATE INDEX IF NOT EXISTS idx_horas_estudo_data ON horas_estudo(data);
+
+CREATE TABLE IF NOT EXISTS ciclo_estudos (
+    id            INTEGER PRIMARY KEY,
+    posicao       INTEGER NOT NULL UNIQUE,
+    disciplina_id INTEGER NOT NULL UNIQUE REFERENCES disciplinas(id),
+    horas         REAL NOT NULL DEFAULT 1.0 CHECK (horas > 0)
+);
 """
 
 
@@ -101,10 +108,20 @@ def query_df(conn, sql, params=None):
     return pd.DataFrame(cur.fetchall(), columns=cols)
 
 
+def _migrar_ciclo(conn):
+    linhas = conn.execute("PRAGMA table_info(ciclo_estudos)").fetchall()
+    colunas = {r[1] for r in linhas}
+    if colunas and "horas" not in colunas:
+        conn.execute(
+            "ALTER TABLE ciclo_estudos ADD COLUMN horas REAL NOT NULL DEFAULT 1.0 CHECK (horas > 0)"
+        )
+
+
 def init_db():
     Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
     with get_conn() as conn:
         conn.executescript(_SCHEMA)
+        _migrar_ciclo(conn)
     from .seed import seed_disciplinas
 
     seed_disciplinas()
