@@ -275,6 +275,58 @@ def validar_horas(data, horas):
     return erros
 
 
+def insert_materia(data, disciplina_id, materia, submateria=None):
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO materias (data, disciplina_id, materia, submateria) VALUES (?, ?, ?, ?)",
+            (str(data), int(disciplina_id), materia, submateria or None),
+        )
+
+
+def delete_materia(materia_id):
+    with get_conn() as conn:
+        conn.execute("DELETE FROM materias WHERE id = ?", (int(materia_id),))
+
+
+def list_materias(inicio=None, fim=None, disciplina_ids=None, limit=None):
+    wheres, params = [], []
+    if inicio:
+        wheres.append("m.data >= ?")
+        params.append(inicio)
+    if fim:
+        wheres.append("m.data <= ?")
+        params.append(fim)
+    if disciplina_ids:
+        placeholders = ", ".join("?" for _ in disciplina_ids)
+        wheres.append(f"m.disciplina_id IN ({placeholders})")
+        params.extend(int(v) for v in disciplina_ids)
+    sql = """
+    SELECT m.id, m.data, m.disciplina_id, d.nome, d.bloco,
+           m.materia, m.submateria, m.criado_em
+    FROM materias m
+    JOIN disciplinas d ON d.id = m.disciplina_id
+    """
+    if wheres:
+        sql += " WHERE " + " AND ".join(wheres)
+    sql += " ORDER BY m.data DESC, m.id DESC"
+    if limit:
+        sql += " LIMIT ?"
+        params.append(limit)
+    with get_conn() as conn:
+        return query_df(conn, sql, params)
+
+
+def validar_materia(data, materia):
+    erros = []
+    if data is None:
+        erros.append("Informe uma data.")
+    elif isinstance(data, date) and data > date.today():
+        erros.append("A data não pode ser no futuro.")
+    if materia is None or not str(materia).strip():
+        erros.append("Informe a matéria estudada.")
+    return erros
+
+
 def _e_inteiro(v):
     try:
         return float(v).is_integer()

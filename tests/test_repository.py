@@ -1,5 +1,6 @@
 import sqlite3
 
+import pandas as pd
 import pytest
 
 
@@ -233,3 +234,53 @@ def test_validar_registro():
         "Chutes certos não pode ser maior que os chutes nem que os acertos."
     ]
     assert repository.validar_registro(hoje, 10.5, 8, 2, 1) == ["Use apenas números inteiros."]
+
+
+def test_materia_insert_list_delete(repo_db):
+    from src import repository
+
+    repository.insert_materia("2026-08-17", 1, "Denotação e conotação", "Funções da linguagem")
+    repository.insert_materia("2026-08-18", 1, "Crase")
+    df = repository.list_materias()
+    assert len(df) == 2
+    row = df.iloc[0]
+    assert row["data"] == "2026-08-18"
+    assert row["disciplina_id"] == 1
+    assert row["nome"] == "Língua Portuguesa"
+    assert row["bloco"] == "basico"
+    assert row["materia"] == "Crase"
+    assert pd.isna(row["submateria"])
+    repository.delete_materia(int(row["id"]))
+    assert len(repository.list_materias()) == 1
+    repository.delete_materia(9999)
+
+
+def test_materia_filtros(repo_db):
+    from src import repository
+
+    repository.insert_materia("2026-08-01", 1, "A")
+    repository.insert_materia("2026-08-10", 2, "B")
+    df = repository.list_materias(inicio="2026-08-05", fim="2026-08-31")
+    assert len(df) == 1
+    assert df.iloc[0]["materia"] == "B"
+    df = repository.list_materias(disciplina_ids=[1])
+    assert len(df) == 1
+    assert df.iloc[0]["materia"] == "A"
+    df = repository.list_materias(limit=1)
+    assert len(df) == 1
+
+
+def test_validar_materia():
+    from datetime import date, timedelta
+
+    from src import repository
+
+    hoje = date.today()
+    assert repository.validar_materia(hoje, "  Denotação  ") == []
+    assert repository.validar_materia(hoje + timedelta(days=1), "A") == [
+        "A data não pode ser no futuro."
+    ]
+    assert repository.validar_materia(hoje, "") == ["Informe a matéria estudada."]
+    assert repository.validar_materia(hoje, "   ") == ["Informe a matéria estudada."]
+    assert repository.validar_materia(hoje, None) == ["Informe a matéria estudada."]
+    assert repository.validar_materia(None, "A") == ["Informe uma data."]

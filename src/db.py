@@ -54,6 +54,18 @@ CREATE TABLE IF NOT EXISTS horas_estudo (
 
 CREATE INDEX IF NOT EXISTS idx_horas_estudo_data ON horas_estudo(data);
 
+CREATE TABLE IF NOT EXISTS materias (
+    id            INTEGER PRIMARY KEY,
+    data          TEXT NOT NULL,
+    disciplina_id INTEGER NOT NULL REFERENCES disciplinas(id),
+    materia       TEXT NOT NULL,
+    submateria    TEXT,
+    criado_em     TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_materias_data       ON materias(data);
+CREATE INDEX IF NOT EXISTS idx_materias_disciplina ON materias(disciplina_id);
+
 CREATE TABLE IF NOT EXISTS ciclo_estudos (
     id            INTEGER PRIMARY KEY,
     posicao       INTEGER NOT NULL UNIQUE,

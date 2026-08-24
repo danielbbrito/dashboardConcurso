@@ -44,5 +44,10 @@ def agg_horas_por_dia(inicio=None, fim=None):
 
 
 @st.cache_data(ttl=60, show_spinner=False)
+def list_materias(inicio=None, fim=None, disciplina_ids=None, limit=None):
+    return repository.list_materias(inicio, fim, disciplina_ids, limit)
+
+
+@st.cache_data(ttl=60, show_spinner=False)
 def list_ciclo():
     return repository.list_ciclo()

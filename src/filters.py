@@ -217,3 +217,40 @@ def render_tabela_horas_com_exclusao(df, key):
             st.cache_data.clear()
             st.session_state[f"_flash_{key}"] = f"Registro de horas {sel} excluído."
             st.rerun()
+
+
+def render_tabela_materias_com_exclusao(df, key):
+    flash = st.session_state.pop(f"_flash_{key}", None)
+    if flash:
+        st.success(flash)
+    if df is None or df.empty:
+        st.info("Nenhuma matéria registrada.")
+        return
+    visao = df.copy()
+    visao["data_fmt"] = visao["data"].map(fmt_data_iso)
+    visao["submateria"] = visao["submateria"].fillna("")
+    visao["criado_fmt"] = visao["criado_em"].str[:16]
+    st.dataframe(
+        visao[["id", "data_fmt", "nome", "materia", "submateria", "criado_fmt"]],
+        width="stretch",
+        hide_index=True,
+        column_config={
+            "id": "ID",
+            "data_fmt": "Data",
+            "nome": "Disciplina",
+            "materia": "Matéria",
+            "submateria": "Submatéria",
+            "criado_fmt": "Registrado em",
+        },
+    )
+    with st.expander(":material/delete: Excluir matéria", expanded=False):
+        ids = visao["id"].tolist()
+        sel = st.selectbox("Matéria (ID) a excluir", ids, key=f"{key}_del_sel")
+        conf = st.checkbox("Confirmo a exclusão", key=f"{key}_del_conf")
+        if st.button(
+            ":material/delete: Excluir", key=f"{key}_del_btn", type="secondary", disabled=not conf
+        ):
+            repository.delete_materia(int(sel))
+            st.cache_data.clear()
+            st.session_state[f"_flash_{key}"] = f"Matéria {sel} excluída."
+            st.rerun()
