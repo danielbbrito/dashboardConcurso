@@ -88,6 +88,34 @@ def fig_evolucao(serie, mostrar_taxa_segura=False):
     return fig
 
 
+def fig_taxa_semanal(serie):
+    if serie.empty:
+        return _figura_vazia()
+    df = serie.copy()
+    fig = go.Figure()
+    fig.add_scatter(
+        x=df["data"],
+        y=df["taxa_semana"] * 100,
+        name="Taxa de acerto da semana",
+        mode="lines+markers",
+        line=dict(color=AZUL_600, width=2.5),
+        marker=dict(size=8),
+        customdata=[[a, f, fim] for a, f, fim in zip(df["acertos"], df["feitas"], df["data_fim"])],
+        hovertemplate=(
+            "%{x} a %{customdata[2]}<br>"
+            "Taxa da semana: %{y:.1f}%<br>"
+            "Acertos/Feitas: %{customdata[0]}/%{customdata[1]}<extra></extra>"
+        ),
+    )
+    fig.update_layout(
+        yaxis=dict(title="Taxa de acerto (%)", range=[0, 100], ticksuffix="%"),
+        xaxis=dict(title=None),
+        height=320,
+        margin=dict(l=10, r=10, t=30, b=10),
+    )
+    return fig
+
+
 def fig_evolucao_horas(serie):
     if serie.empty:
         return _figura_vazia()
@@ -236,5 +264,95 @@ def fig_comparacao(por_disciplina):
         yaxis=dict(title=None),
         height=max(320, 44 * len(df)),
         margin=dict(l=10, r=30, t=40, b=10),
+    )
+    return fig
+
+
+def fig_materias(agg):
+    """Scatter: dificuldade média percebida × taxa de acerto, por matéria.
+
+    agg: saída de repository.agg_por_materia.
+    """
+    if agg.empty:
+        return _figura_vazia()
+    df = agg.copy()
+    df = df[df["feitas"] > 0]
+    if df.empty:
+        return _figura_vazia()
+    df["taxa_acerto"] = df["acertos"] / df["feitas"]
+    df["rotulo"] = df.apply(
+        lambda r: f"{r['materia']}<br>{r['disciplina']}", axis=1
+    )
+    fig = go.Figure()
+    for sub, nome, cor in (
+        (df[df["bloco"] == "basico"], "Básicos", AZUL_500),
+        (df[df["bloco"] == "especifico"], "Específicos", AZUL_800),
+    ):
+        if sub.empty:
+            continue
+        fig.add_scatter(
+            x=sub["dificuldade_media"],
+            y=sub["taxa_acerto"] * 100,
+            mode="markers",
+            name=nome,
+            marker=dict(
+                size=8 + 12 * sub["feitas"] / max(sub["feitas"].max(), 1),
+                color=cor,
+                opacity=0.75,
+                line=dict(width=1, color="#1e293b"),
+            ),
+            customdata=sub[["rotulo", "feitas", "acertos", "n_sessoes"]],
+            hovertemplate=(
+                "%{customdata[0]}<br>"
+                "Dificuldade média: %{x:.1f}/4<br>"
+                "Taxa de acerto: %{y:.1f}%<br>"
+                "Acertos/Feitas: %{customdata[2]}/%{customdata[1]}"
+                " · %{customdata[3]} sessão(ões)<extra></extra>"
+            ),
+        )
+    fig.update_layout(
+        xaxis=dict(title="Dificuldade percebida média (1 = muito fácil · 4 = difícil)", range=[0.5, 4.5]),
+        yaxis=dict(title="Taxa de acerto (%)", range=[0, 100], ticksuffix="%"),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0),
+        height=400,
+        margin=dict(l=10, r=10, t=30, b=10),
+    )
+    return fig
+
+
+def fig_por_dificuldade(agg):
+    """Barras: taxa de acerto por nível de dificuldade percebida.
+
+    agg: saída de repository.agg_por_dificuldade.
+    """
+    if agg.empty:
+        return _figura_vazia()
+    from .dificuldade import DIFICULDADES
+
+    df = agg.copy()
+    df["taxa_acerto"] = df["acertos"] / df["feitas"]
+    df = df.sort_values("dificuldade_num")
+    labels = [d for d in DIFICULDADES if d in set(df["dificuldade"])]
+    fig = go.Figure()
+    fig.add_bar(
+        x=df["dificuldade"],
+        y=df["taxa_acerto"] * 100,
+        marker_color=[AZUL_300, AZUL_500, AZUL_600, AZUL_800][: len(df)],
+        customdata=df[["acertos", "feitas", "n_sessoes"]],
+        text=[f"{t:.1%}  ({a}/{f})" for t, a, f in zip(df["taxa_acerto"], df["acertos"], df["feitas"])],
+        textposition="outside",
+        cliponaxis=False,
+        hovertemplate=(
+            "Dificuldade %{x}<br>"
+            "Taxa de acerto: %{y:.1f}%<br>"
+            "Acertos/Feitas: %{customdata[0]}/%{customdata[1]}"
+            " · %{customdata[2]} sessão(ões)<extra></extra>"
+        ),
+    )
+    fig.update_layout(
+        xaxis=dict(title="Dificuldade percebida", categoryorder="array", categoryarray=labels),
+        yaxis=dict(title="Taxa de acerto (%)", range=[0, 100], ticksuffix="%"),
+        height=320,
+        margin=dict(l=10, r=10, t=30, b=10),
     )
     return fig

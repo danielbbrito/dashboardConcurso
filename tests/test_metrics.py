@@ -86,6 +86,25 @@ def test_serie_diaria():
     assert (s["feitas_acum"].diff().fillna(s["feitas_acum"].iloc[0]) >= 0).all()
 
 
+def test_serie_semanal():
+    from src import metrics
+
+    df = _df(
+        [
+            ["2026-08-03", 1, "A", "basico", 10, 8, 2, 1],
+            ["2026-08-05", 2, "B", "especifico", 5, 2, 1, 0],
+            ["2026-08-10", 1, "A", "basico", 10, 5, 0, 0],
+        ]
+    )
+    s = metrics.serie_semanal(df)
+    assert s["data"].tolist() == ["2026-08-03", "2026-08-10"]
+    assert s["data_fim"].tolist() == ["2026-08-09", "2026-08-16"]
+    assert s["feitas"].tolist() == [15, 10]
+    assert s["acertos"].tolist() == [10, 5]
+    assert s["taxa_semana"].tolist() == pytest.approx([10 / 15, 0.5])
+    assert metrics.serie_semanal(_df([])).empty
+
+
 def test_ranking_min_feitas():
     from src import metrics
 

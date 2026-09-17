@@ -24,6 +24,16 @@ def agg_por_dia(inicio=None, fim=None, disciplina_ids=None):
 
 
 @st.cache_data(ttl=60, show_spinner=False)
+def agg_por_materia(inicio=None, fim=None, disciplina_ids=None, por_submateria=False):
+    return repository.agg_por_materia(inicio, fim, disciplina_ids, por_submateria)
+
+
+@st.cache_data(ttl=60, show_spinner=False)
+def agg_por_dificuldade(inicio=None, fim=None, disciplina_ids=None):
+    return repository.agg_por_dificuldade(inicio, fim, disciplina_ids)
+
+
+@st.cache_data(ttl=60, show_spinner=False)
 def get_anotacao(disciplina_id):
     return repository.get_anotacao(disciplina_id)
 

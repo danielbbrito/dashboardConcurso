@@ -83,11 +83,15 @@ if df.empty:
 
 render_kpis(metrics.compute_kpis(df))
 
+serie = metrics.serie_diaria(df)
 st.subheader(":material/show_chart: Evolução no tempo")
 st.plotly_chart(
-    charts.fig_evolucao(metrics.serie_diaria(df), mostrar_taxa_segura=True),
+    charts.fig_evolucao(serie, mostrar_taxa_segura=True),
     width="stretch",
 )
+
+st.subheader(":material/percent: Taxa de acerto por semana")
+st.plotly_chart(charts.fig_taxa_semanal(metrics.serie_semanal(df)), width="stretch")
 
 st.subheader(":material/leaderboard: Desempenho por disciplina")
 agg_disc = cache.agg_por_disciplina(inicio, fim, disc_tuple)

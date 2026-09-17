@@ -7,6 +7,7 @@ from src.filters import (
     BLOCO_PROVA,
     filtro_periodo,
     label_com_bloco,
+    preparar_tabela_materias,
     render_kpis,
     render_tabela_registros_com_exclusao,
 )
@@ -42,6 +43,33 @@ else:
         charts.fig_evolucao(metrics.serie_diaria(df), mostrar_taxa_segura=True),
         width="stretch",
     )
+
+    st.subheader(":material/topic: Performance por matéria")
+    por_sub = st.checkbox("Detalhar por submatéria", key="pd_por_sub")
+    agg_mat = cache.agg_por_materia(inicio, fim, (disc["id"],), por_submateria=por_sub)
+    if agg_mat.empty:
+        st.info("Nenhuma sessão com matéria registrada para esta disciplina no período.")
+    else:
+        st.plotly_chart(charts.fig_materias(agg_mat), width="stretch")
+        min_feitas = st.slider(
+            "Volume mínimo de questões por matéria", 0, 100, 10, key="pd_min_mat"
+        )
+        visao, colunas, config = preparar_tabela_materias(agg_mat, por_sub, min_feitas)
+        if visao.empty:
+            st.info("Nenhuma matéria atingiu o volume mínimo. Reduza o mínimo acima.")
+        else:
+            visao = visao.drop(columns=["disciplina"])
+            colunas = [c for c in colunas if c != "disciplina"]
+            st.dataframe(
+                visao[colunas],
+                width="stretch",
+                hide_index=True,
+                column_config=config,
+            )
+        st.caption(
+            "Dificuldade média: 1 = muito fácil · 2 = fácil · 3 = médio · 4 = difícil. "
+            "Sessões registradas sem matéria ficam de fora."
+        )
 
     st.subheader("Histórico de registros")
     render_tabela_registros_com_exclusao(df, "pd_hist")

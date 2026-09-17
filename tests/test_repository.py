@@ -214,26 +214,151 @@ def test_ciclo_migracao_coluna_horas(tmp_path, monkeypatch):
     assert horas == 1.0
 
 
+def test_migracao_colunas_registros(tmp_path, monkeypatch):
+    import sqlite3
+
+    import src.db as db
+
+    path = tmp_path / "mig.db"
+    conn = sqlite3.connect(str(path))
+    conn.execute(
+        "CREATE TABLE registros ("
+        " id INTEGER PRIMARY KEY,"
+        " data TEXT NOT NULL,"
+        " disciplina_id INTEGER NOT NULL,"
+        " feitas INTEGER NOT NULL,"
+        " acertos INTEGER NOT NULL,"
+        " chutes INTEGER NOT NULL DEFAULT 0,"
+        " chutes_certos INTEGER NOT NULL DEFAULT 0,"
+        " criado_em TEXT NOT NULL DEFAULT (datetime('now')))"
+    )
+    conn.execute(
+        "INSERT INTO registros (data, disciplina_id, feitas, acertos) VALUES ('2026-08-17', 1, 10, 8)"
+    )
+    conn.commit()
+    conn.close()
+
+    monkeypatch.setattr(db, "DB_PATH", str(path))
+    db.init_db()
+    with db.get_conn() as c:
+        colunas = {r[1] for r in c.execute("PRAGMA table_info(registros)")}
+        linha = c.execute("SELECT dificuldade, materia, submateria FROM registros").fetchone()
+    assert {"dificuldade", "materia", "submateria"} <= colunas
+    assert tuple(linha) == (None, None, None)
+
+
+def test_insert_registro_com_extras(repo_db):
+    from src import repository
+
+    repository.insert_registro(
+        "2026-08-17", 1, 10, 8, 2, 1, "Difícil", "Domínio da ortografia oficial"
+    )
+    df = repository.list_registros()
+    row = df.iloc[0]
+    assert row["dificuldade"] == "Difícil"
+    assert row["materia"] == "Domínio da ortografia oficial"
+    assert row["submateria"] is None or pd.isna(row["submateria"])
+
+    repository.insert_registro(
+        "2026-08-18", 1, 6, 5, 0, 0, "Fácil", "Reescrita de frases e parágrafos do texto",
+        "Significação das palavras",
+    )
+    df = repository.list_registros()
+    assert len(df) == 2
+    assert df.iloc[0]["submateria"] == "Significação das palavras"
+    assert df.iloc[0]["materia"] == "Reescrita de frases e parágrafos do texto"
+
+
+def test_agg_por_materia(repo_db):
+    from src import repository
+
+    repository.insert_registro("2026-08-01", 1, 10, 8, 0, 0, "Fácil", "A")
+    repository.insert_registro("2026-08-02", 1, 5, 2, 0, 0, "Difícil", "A")
+    repository.insert_registro("2026-08-03", 1, 8, 7, 0, 0, "Fácil", "A", "sub-1")
+    repository.insert_registro("2026-08-04", 2, 8, 7, 0, 0, "Fácil", "B")
+    repository.insert_registro("2026-08-05", 1, 4, 2, 0, 0, "Médio", "Simulado")
+
+    agg = repository.agg_por_materia()
+    assert len(agg) == 3
+    linha_a = agg[agg["materia"] == "A"].iloc[0]
+    assert linha_a["disciplina"] == "Língua Portuguesa"
+    assert linha_a["feitas"] == 23
+    assert linha_a["acertos"] == 17
+    assert linha_a["n_sessoes"] == 3
+    assert linha_a["dificuldade_media"] == pytest.approx((2 + 4 + 2) / 3)
+
+    agg_sub = repository.agg_por_materia(por_submateria=True)
+    assert len(agg_sub) == 4
+    assert agg_sub["submateria"].notna().sum() == 1
+    assert "sub-1" in agg_sub["submateria"].tolist()
+
+    agg_filtro = repository.agg_por_materia(disciplina_ids=[2])
+    assert len(agg_filtro) == 1
+    assert agg_filtro.iloc[0]["materia"] == "B"
+
+    assert repository.agg_por_materia()["materia"].tolist() == ["A", "Simulado", "B"]
+
+
+def test_agg_por_dificuldade(repo_db):
+    from src import repository
+
+    repository.insert_registro("2026-08-01", 1, 10, 8, 0, 0, "Fácil", "A")
+    repository.insert_registro("2026-08-02", 1, 5, 2, 0, 0, "Difícil", "A")
+    repository.insert_registro("2026-08-03", 2, 8, 7, 0, 0, "Fácil", "B")
+    repository.insert_registro("2026-08-04", 1, 6, 3, 0, 0, "Médio", "Simulado")
+    repository.insert_registro("2026-08-05", 1, 4, 2, 0, 0)
+
+    agg = repository.agg_por_dificuldade()
+    assert len(agg) == 3
+    facil = agg[agg["dificuldade"] == "Fácil"].iloc[0]
+    assert facil["feitas"] == 18
+    assert facil["acertos"] == 15
+    assert facil["n_sessoes"] == 2
+    dificil = agg[agg["dificuldade"] == "Difícil"].iloc[0]
+    assert dificil["dificuldade_num"] == 4
+    assert agg[agg["dificuldade"] == "Médio"].iloc[0]["dificuldade_num"] == 3
+
+
+def test_materias_edital_catalogo():
+    from src.materias_edital import MATERIAS_POR_DISCIPLINA, materias_de, submaterias_de
+    from src.seed import DISCIPLINAS
+
+    nomes_seed = {n for n, *_ in DISCIPLINAS}
+    assert set(MATERIAS_POR_DISCIPLINA) == nomes_seed
+    assert "Simulado" not in materias_de("Língua Portuguesa")
+    assert submaterias_de("Língua Portuguesa", "Domínio da ortografia oficial") == []
+    assert "Emprego do sinal indicativo de crase" in submaterias_de(
+        "Língua Portuguesa", "Domínio da estrutura morfossintática do período"
+    )
+    assert submaterias_de("Língua Portuguesa", "Inexistente") == []
+
+
 def test_validar_registro():
     from datetime import date, timedelta
 
     from src import repository
 
     hoje = date.today()
-    assert repository.validar_registro(hoje, 10, 8, 2, 1) == []
-    assert repository.validar_registro(hoje + timedelta(days=1), 10, 8, 2, 1) == [
+    assert repository.validar_registro(hoje, 10, 8, 2, 1, "Médio") == []
+    assert repository.validar_registro(hoje + timedelta(days=1), 10, 8, 2, 1, "Médio") == [
         "A data não pode ser no futuro."
     ]
-    assert repository.validar_registro(hoje, 0, 0, 0, 0) == [
+    assert repository.validar_registro(hoje, 0, 0, 0, 0, "Médio") == [
         "Informe pelo menos 1 questão feita."
     ]
-    assert repository.validar_registro(hoje, 10, 11, 0, 0) == [
+    assert repository.validar_registro(hoje, 10, 11, 0, 0, "Médio") == [
         "Acertos deve estar entre 0 e o total de questões."
     ]
-    assert repository.validar_registro(hoje, 10, 8, 3, 4) == [
+    assert repository.validar_registro(hoje, 10, 8, 3, 4, "Médio") == [
         "Chutes certos não pode ser maior que os chutes nem que os acertos."
     ]
-    assert repository.validar_registro(hoje, 10.5, 8, 2, 1) == ["Use apenas números inteiros."]
+    assert repository.validar_registro(hoje, 10.5, 8, 2, 1, "Médio") == ["Use apenas números inteiros."]
+    assert repository.validar_registro(hoje, 10, 8, 2, 1) == [
+        "Informe a dificuldade percebida da sessão."
+    ]
+    assert repository.validar_registro(hoje, 10, 8, 2, 1, "Impossível") == [
+        "Informe a dificuldade percebida da sessão."
+    ]
 
 
 def test_materia_insert_list_delete(repo_db):

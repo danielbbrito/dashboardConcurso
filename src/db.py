@@ -129,11 +129,20 @@ def _migrar_ciclo(conn):
         )
 
 
+def _migrar_registros(conn):
+    linhas = conn.execute("PRAGMA table_info(registros)").fetchall()
+    colunas = {r[1] for r in linhas}
+    for coluna in ("dificuldade", "materia", "submateria"):
+        if coluna not in colunas:
+            conn.execute(f"ALTER TABLE registros ADD COLUMN {coluna} TEXT")
+
+
 def init_db():
     Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
     with get_conn() as conn:
         conn.executescript(_SCHEMA)
         _migrar_ciclo(conn)
+        _migrar_registros(conn)
     from .seed import seed_disciplinas
 
     seed_disciplinas()

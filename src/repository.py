@@ -1,6 +1,7 @@
 from datetime import date
 
 from .db import get_conn, query_df, query_rows
+from .dificuldade import DIFICULDADES
 
 
 def list_disciplinas():
@@ -8,12 +9,33 @@ def list_disciplinas():
         return query_rows(conn, "SELECT * FROM disciplinas ORDER BY ordem")
 
 
-def insert_registro(data, disciplina_id, feitas, acertos, chutes, chutes_certos):
+def insert_registro(
+    data,
+    disciplina_id,
+    feitas,
+    acertos,
+    chutes,
+    chutes_certos,
+    dificuldade=None,
+    materia=None,
+    submateria=None,
+):
     with get_conn() as conn:
         conn.execute(
-            "INSERT INTO registros (data, disciplina_id, feitas, acertos, chutes, chutes_certos)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
-            (data, disciplina_id, feitas, acertos, chutes, chutes_certos),
+            "INSERT INTO registros (data, disciplina_id, feitas, acertos, chutes, chutes_certos,"
+            " dificuldade, materia, submateria)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                data,
+                disciplina_id,
+                feitas,
+                acertos,
+                chutes,
+                chutes_certos,
+                dificuldade or None,
+                materia or None,
+                submateria or None,
+            ),
         )
 
 
@@ -48,7 +70,8 @@ def _clausulas_filtro(inicio=None, fim=None, disciplina_ids=None):
 
 _SELECT_BASE = """
 SELECT r.id, r.data, r.disciplina_id, d.nome, d.bloco,
-       r.feitas, r.acertos, r.chutes, r.chutes_certos, r.criado_em
+       r.feitas, r.acertos, r.chutes, r.chutes_certos,
+       r.dificuldade, r.materia, r.submateria, r.criado_em
 FROM registros r
 JOIN disciplinas d ON d.id = r.disciplina_id
 """
@@ -100,6 +123,62 @@ def agg_por_disciplina(inicio=None, fim=None, disciplina_ids=None):
     if wheres:
         sql += " WHERE " + " AND ".join(wheres)
     sql += " GROUP BY r.disciplina_id ORDER BY d.ordem"
+    with get_conn() as conn:
+        return query_df(conn, sql, params)
+
+
+_DIFICULDADE_CASE = """
+CASE r.dificuldade
+    WHEN 'Muito fácil' THEN 1
+    WHEN 'Fácil' THEN 2
+    WHEN 'Médio' THEN 3
+    WHEN 'Difícil' THEN 4
+END
+"""
+
+
+def agg_por_materia(inicio=None, fim=None, disciplina_ids=None, por_submateria=False):
+    """Agrega registros com matéria preenchida por (disciplina, matéria[, submatéria])."""
+    wheres, params = _clausulas_filtro(inicio, fim, disciplina_ids)
+    wheres.append("r.materia IS NOT NULL AND r.materia != ''")
+    grupo = "r.materia, r.submateria" if por_submateria else "r.materia"
+    col_sub = "r.submateria" if por_submateria else "NULL AS submateria"
+    sql = f"""
+    SELECT d.nome AS disciplina, d.bloco, r.materia, {col_sub},
+           COUNT(*) AS n_sessoes,
+           SUM(r.feitas) AS feitas,
+           SUM(r.acertos) AS acertos,
+           SUM(r.chutes) AS chutes,
+           SUM(r.chutes_certos) AS chutes_certos,
+           AVG({_DIFICULDADE_CASE}) AS dificuldade_media
+    FROM registros r
+    JOIN disciplinas d ON d.id = r.disciplina_id
+    """
+    if wheres:
+        sql += " WHERE " + " AND ".join(wheres)
+    sql += f" GROUP BY r.disciplina_id, {grupo} ORDER BY d.ordem, r.materia"
+    with get_conn() as conn:
+        return query_df(conn, sql, params)
+
+
+def agg_por_dificuldade(inicio=None, fim=None, disciplina_ids=None):
+    """Agrega registros com dificuldade preenchida por nível percebido."""
+    wheres, params = _clausulas_filtro(inicio, fim, disciplina_ids)
+    wheres.append("r.dificuldade IS NOT NULL AND r.dificuldade != ''")
+    sql = f"""
+    SELECT r.dificuldade,
+           COUNT(*) AS n_sessoes,
+           SUM(r.feitas) AS feitas,
+           SUM(r.acertos) AS acertos,
+           SUM(r.chutes) AS chutes,
+           SUM(r.chutes_certos) AS chutes_certos,
+           AVG({_DIFICULDADE_CASE}) AS dificuldade_num
+    FROM registros r
+    JOIN disciplinas d ON d.id = r.disciplina_id
+    """
+    if wheres:
+        sql += " WHERE " + " AND ".join(wheres)
+    sql += " GROUP BY r.dificuldade"
     with get_conn() as conn:
         return query_df(conn, sql, params)
 
@@ -334,12 +413,14 @@ def _e_inteiro(v):
         return False
 
 
-def validar_registro(data, feitas, acertos, chutes, chutes_certos):
+def validar_registro(data, feitas, acertos, chutes, chutes_certos, dificuldade=None):
     erros = []
     if data is None:
         erros.append("Informe uma data.")
     elif isinstance(data, date) and data > date.today():
         erros.append("A data não pode ser no futuro.")
+    if dificuldade not in DIFICULDADES:
+        erros.append("Informe a dificuldade percebida da sessão.")
     if feitas is None or feitas < 1:
         erros.append("Informe pelo menos 1 questão feita.")
     campos = [feitas, acertos, chutes, chutes_certos]

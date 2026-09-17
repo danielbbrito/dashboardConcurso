@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+import pandas as pd
 import streamlit as st
 
 from . import cache, repository
@@ -79,6 +80,38 @@ def fmt_nota(v):
     return "—" if v is None else f"{v:.1f}".replace(".", ",")
 
 
+def fmt_dificuldade_media(v):
+    if v is None or pd.isna(v):
+        return "—"
+    return f"{v:.1f}".replace(".", ",")
+
+
+def preparar_tabela_materias(agg, por_sub, min_feitas=0):
+    """Formata a agregação agg_por_materia para exibição em dataframe.
+
+    Retorna (visao, colunas, column_config) já ordenado por acertos.
+    """
+    visao = agg.copy()
+    visao["taxa"] = (visao["acertos"] / visao["feitas"]).map(fmt_pct)
+    visao["dificuldade_fmt"] = visao["dificuldade_media"].map(fmt_dificuldade_media)
+    visao = visao[visao["feitas"] >= min_feitas].sort_values("acertos", ascending=False)
+    colunas = ["disciplina", "materia", "n_sessoes", "feitas", "acertos", "taxa", "dificuldade_fmt"]
+    config = {
+        "disciplina": "Disciplina",
+        "materia": "Matéria",
+        "n_sessoes": "Sessões",
+        "feitas": "Feitas",
+        "acertos": "Acertos",
+        "taxa": "Taxa de acerto",
+        "dificuldade_fmt": "Dificuldade média (1–4)",
+    }
+    if por_sub:
+        visao["sub_fmt"] = visao["submateria"].fillna("")
+        colunas.insert(2, "sub_fmt")
+        config["sub_fmt"] = "Submatéria"
+    return visao, colunas, config
+
+
 def fmt_pp(v):
     return "—" if v is None else f"{v:+.1f} p.p.".replace(".", ",")
 
@@ -143,6 +176,9 @@ def render_tabela_registros_com_exclusao(df, key):
     visao = df.copy()
     visao["data_fmt"] = visao["data"].map(fmt_data_iso)
     visao["taxa"] = (visao["acertos"] / visao["feitas"]).map(fmt_pct)
+    visao["submateria"] = visao["submateria"].fillna("")
+    visao["materia"] = visao["materia"].fillna("")
+    visao["dificuldade"] = visao["dificuldade"].fillna("")
     visao["criado_fmt"] = visao["criado_em"].str[:16]
     colunas = [
         "id",
@@ -153,6 +189,9 @@ def render_tabela_registros_com_exclusao(df, key):
         "chutes",
         "chutes_certos",
         "taxa",
+        "dificuldade",
+        "materia",
+        "submateria",
         "criado_fmt",
     ]
     st.dataframe(
@@ -168,6 +207,9 @@ def render_tabela_registros_com_exclusao(df, key):
             "chutes": "Chutes",
             "chutes_certos": "Chutes certos",
             "taxa": "Taxa",
+            "dificuldade": "Dificuldade",
+            "materia": "Matéria",
+            "submateria": "Submatéria",
             "criado_fmt": "Registrado em",
         },
     )

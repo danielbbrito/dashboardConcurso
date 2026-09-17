@@ -80,6 +80,39 @@ def serie_diaria(df):
     return g[_COLS_SERIE]
 
 
+_COLS_SERIE_SEMANAL = [
+    "data",
+    "data_fim",
+    "feitas",
+    "acertos",
+    "chutes",
+    "chutes_certos",
+    "taxa_semana",
+]
+
+
+def serie_semanal(df):
+    if df.empty:
+        return pd.DataFrame(columns=_COLS_SERIE_SEMANAL)
+    g = df.copy()
+    g["dt"] = pd.to_datetime(g["data"])
+    g["semana_inicio"] = _inicio_semana(g["dt"])
+    out = (
+        g.groupby("semana_inicio", as_index=False)
+        .agg(
+            feitas=("feitas", "sum"),
+            acertos=("acertos", "sum"),
+            chutes=("chutes", "sum"),
+            chutes_certos=("chutes_certos", "sum"),
+        )
+        .sort_values("semana_inicio")
+    )
+    out["data"] = out["semana_inicio"].dt.strftime("%Y-%m-%d")
+    out["data_fim"] = (out["semana_inicio"] + pd.Timedelta(days=6)).dt.strftime("%Y-%m-%d")
+    out["taxa_semana"] = out["acertos"] / out["feitas"]
+    return out[_COLS_SERIE_SEMANAL]
+
+
 _COLS_SERIE_HORAS = ["data", "horas", "horas_acum"]
 
 
