@@ -3,12 +3,10 @@ from datetime import date, timedelta
 import pandas as pd
 
 INTERVALOS = [
-    ("24h", "1d", timedelta(days=1)),
-    ("7 dias", "7d", timedelta(days=7)),
-    ("30 dias", "30d", timedelta(days=30)),
+    ("Semanal", "Sáb"),
 ]
 
-MARCAS = {tipo: marca for tipo, marca, _ in INTERVALOS}
+MARCAS = {tipo: marca for tipo, marca in INTERVALOS}
 
 COLUNAS = [
     "id",
@@ -24,23 +22,29 @@ COLUNAS = [
 
 
 def revisoes_de(data):
-    """Datas de revisão para uma matéria estudada em `data` (24h, 7 e 30 dias)."""
-    return [(tipo, data + delta) for tipo, _, delta in INTERVALOS]
+    """Data de sábado em que será revisada a matéria estudada em `data`."""
+    sabado = data + timedelta(days=(5 - data.weekday()) % 7)
+    return [(tipo, sabado) for tipo, _ in INTERVALOS]
+
+
+def inicio_semana(data):
+    """Retorna o domingo que inicia a semana com revisão no sábado seguinte."""
+    return data - timedelta(days=(data.weekday() + 1) % 7)
 
 
 def expandir(df):
-    """Expande cada matéria registrada nas suas 3 datas de revisão."""
+    """Programa uma revisão semanal para cada matéria registrada."""
     linhas = []
     for _, r in df.iterrows():
         data_estudo = date.fromisoformat(r["data"])
-        for tipo, _, delta in INTERVALOS:
+        for tipo, data_revisao in revisoes_de(data_estudo):
             linhas.append(
                 {
                     "id": r["id"],
                     "tipo": tipo,
                     "marca": MARCAS[tipo],
                     "data_estudo": r["data"],
-                    "data_revisao": (data_estudo + delta).isoformat(),
+                    "data_revisao": data_revisao.isoformat(),
                     "disciplina_id": r["disciplina_id"],
                     "disciplina": r["nome"],
                     "materia": r["materia"],
@@ -64,3 +68,18 @@ def mapa_estudos(df):
     for _, r in df.iterrows():
         mapa.setdefault(r["data"], []).append(r.to_dict())
     return mapa
+
+
+def revisoes_na_semana(df, inicio):
+    """Retorna as matérias estudadas de domingo a sábado da semana informada."""
+    inicio = inicio_semana(inicio)
+    fim = inicio + timedelta(days=6)
+    expansao = expandir(df)
+    if expansao.empty:
+        return expansao
+    selecionadas = expansao[
+        expansao["data_estudo"].between(inicio.isoformat(), fim.isoformat())
+    ]
+    return selecionadas.sort_values(
+        ["data_estudo", "disciplina", "materia"], kind="stable"
+    ).reset_index(drop=True)
