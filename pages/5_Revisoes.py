@@ -21,7 +21,7 @@ init_db()
 st.title(":material/event_repeat: Revisões semanais")
 st.caption(
     "As matérias estudadas entre domingo e sábado são agrupadas para revisão "
-    "no **sábado daquela semana**."
+    "no **sábado da semana seguinte**."
 )
 
 disciplinas = cache.list_disciplinas()
@@ -64,7 +64,7 @@ with col_prev:
         st.session_state["rev_semana_inicio"] = semana_inicio - timedelta(days=7)
         st.rerun()
 col_titulo.markdown(
-    f"### Semana de {fmt_data_iso(semana_inicio.isoformat())} "
+    f"### Semana da revisão: {fmt_data_iso(semana_inicio.isoformat())} "
     f"a {fmt_data_iso(semana_fim.isoformat())}"
 )
 with col_prox:
@@ -72,12 +72,18 @@ with col_prox:
         st.session_state["rev_semana_inicio"] = semana_inicio + timedelta(days=7)
         st.rerun()
 
-itens_semana = revisoes.revisoes_na_semana(df, semana_inicio)
+semana_estudo_inicio = semana_inicio - timedelta(days=7)
+semana_estudo_fim = semana_estudo_inicio + timedelta(days=6)
+itens_semana = revisoes.revisoes_na_semana(df, semana_estudo_inicio)
 st.subheader(f":material/event_repeat: Revisão de sábado — {fmt_data_iso(semana_fim.isoformat())}")
+st.caption(
+    f"Matérias estudadas de {fmt_data_iso(semana_estudo_inicio.isoformat())} "
+    f"a {fmt_data_iso(semana_estudo_fim.isoformat())}"
+)
 st.metric("Matérias para revisar no sábado", len(itens_semana))
 
 if itens_semana.empty:
-    st.info("Nenhuma matéria marcada para revisão nesta semana.")
+    st.info("Nenhuma matéria estudada na semana anterior para revisar neste sábado.")
 else:
     visao = itens_semana.copy()
     visao["data_fmt"] = visao["data_revisao"].map(fmt_data_iso)

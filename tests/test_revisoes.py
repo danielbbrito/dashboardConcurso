@@ -6,9 +6,9 @@ from src import revisoes
 
 
 def test_revisoes_de():
-    assert revisoes.revisoes_de(date(2026, 8, 24)) == [("Semanal", date(2026, 8, 29))]
-    assert revisoes.revisoes_de(date(2026, 8, 30)) == [("Semanal", date(2026, 9, 5))]
-    assert revisoes.revisoes_de(date(2026, 8, 29)) == [("Semanal", date(2026, 8, 29))]
+    assert revisoes.revisoes_de(date(2026, 8, 24)) == [("Semanal", date(2026, 9, 5))]
+    assert revisoes.revisoes_de(date(2026, 8, 30)) == [("Semanal", date(2026, 9, 12))]
+    assert revisoes.revisoes_de(date(2026, 8, 29)) == [("Semanal", date(2026, 9, 5))]
 
 
 def _df_um_registro():
@@ -33,7 +33,7 @@ def test_expandir():
     assert len(out) == 1
     assert list(out["tipo"]) == ["Semanal"]
     assert list(out["marca"]) == ["Sáb"]
-    assert list(out["data_revisao"]) == ["2026-08-29"]
+    assert list(out["data_revisao"]) == ["2026-09-05"]
     row = out.iloc[0]
     assert row["disciplina"] == "Língua Portuguesa"
     assert row["materia"] == "Crase"
@@ -42,9 +42,9 @@ def test_expandir():
 
 def test_mapa_revisoes():
     mapa = revisoes.mapa_revisoes(_df_um_registro())
-    assert set(mapa.keys()) == {"2026-08-29"}
-    assert {r["tipo"] for r in mapa["2026-08-29"]} == {"Semanal"}
-    assert mapa["2026-08-29"][0]["materia"] == "Crase"
+    assert set(mapa.keys()) == {"2026-09-05"}
+    assert {r["tipo"] for r in mapa["2026-09-05"]} == {"Semanal"}
+    assert mapa["2026-09-05"][0]["materia"] == "Crase"
 
 
 def test_mapa_estudos():
@@ -57,7 +57,7 @@ def test_mapa_agrupa_mesmo_dia():
     df = pd.concat([_df_um_registro()] * 2)
     df["id"] = [1, 2]
     mapa = revisoes.mapa_revisoes(df)
-    assert len(mapa["2026-08-29"]) == 2
+    assert len(mapa["2026-09-05"]) == 2
 
 
 def test_inicio_semana_comeca_no_domingo():
@@ -74,7 +74,7 @@ def test_revisoes_na_semana_inclui_domingo_a_sabado():
     semana = revisoes.revisoes_na_semana(df, date(2026, 8, 30))
 
     assert list(semana["data_estudo"]) == ["2026-08-30", "2026-09-05"]
-    assert list(semana["data_revisao"]) == ["2026-09-05", "2026-09-05"]
+    assert list(semana["data_revisao"]) == ["2026-09-12", "2026-09-12"]
     assert list(semana["materia"]) == ["Crase", "Crase"]
     assert len(revisoes.revisoes_na_semana(df, date(2026, 9, 6))) == 1
 

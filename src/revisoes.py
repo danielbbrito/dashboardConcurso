@@ -22,8 +22,8 @@ COLUNAS = [
 
 
 def revisoes_de(data):
-    """Data de sábado em que será revisada a matéria estudada em `data`."""
-    sabado = data + timedelta(days=(5 - data.weekday()) % 7)
+    """Data do sábado seguinte à semana em que a matéria foi estudada."""
+    sabado = data + timedelta(days=(5 - data.weekday()) % 7 + 7)
     return [(tipo, sabado) for tipo, _ in INTERVALOS]
 
 
