@@ -1,0 +1,25 @@
+{
+  "verificationVersion": 1,
+  "passed": true,
+  "sourceReadMode": "sqlite3 -readonly",
+  "ownerEmail": "danieldebrito2105@gmail.com",
+  "checks": {
+    "rowCounts": {
+      "disciplinas": true,
+      "registros": true,
+      "anotacoes": true,
+      "horas_estudo": true,
+      "materias": true,
+      "ciclo_estudos": true
+    },
+    "disciplines": true,
+    "questionAggregates": true,
+    "hoursAggregates": true,
+    "topicAggregates": true,
+    "notes": true,
+    "cycle": true,
+    "kpis": true
+  },
+  "sourceSha256": "0929a6183a65833143fc8112c53cba766eeb0971bb5e500eabc1af88b5dfafbe",
+  "targetSha256": "df5727dea0c26c09df5e0579cadb2d3f785faf58f3b7ca13c1b43d67db774eb2"
+}

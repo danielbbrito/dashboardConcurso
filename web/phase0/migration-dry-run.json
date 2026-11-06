@@ -1,0 +1,110 @@
+{
+  "importerVersion": 1,
+  "dryRun": true,
+  "writesPerformed": 0,
+  "source": {
+    "relativePath": "../data/estudos.db",
+    "sha256": "98fba731e65a8be02188b7cb86a916baa1cce27d5007afa3184b14c397b8d586",
+    "schema": {
+      "disciplinas": [
+        "id",
+        "nome",
+        "bloco",
+        "itens_prova",
+        "ordem"
+      ],
+      "registros": [
+        "id",
+        "data",
+        "disciplina_id",
+        "feitas",
+        "acertos",
+        "chutes",
+        "chutes_certos",
+        "criado_em",
+        "dificuldade",
+        "materia",
+        "submateria"
+      ],
+      "anotacoes": [
+        "disciplina_id",
+        "texto",
+        "atualizado_em"
+      ],
+      "horas_estudo": [
+        "id",
+        "data",
+        "horas",
+        "criado_em"
+      ],
+      "materias": [
+        "id",
+        "data",
+        "disciplina_id",
+        "materia",
+        "submateria",
+        "criado_em"
+      ],
+      "ciclo_estudos": [
+        "id",
+        "posicao",
+        "disciplina_id",
+        "horas"
+      ]
+    },
+    "sourceReadMode": "sqlite3 -readonly"
+  },
+  "owner": {
+    "email": "danieldebrito2105@gmail.com",
+    "assignment": "operator-configured owner; never inferred from login"
+  },
+  "validationDate": "2026-10-29",
+  "sourceCounts": {
+    "disciplinas": 10,
+    "registros": 0,
+    "anotacoes": 0,
+    "horas_estudo": 0,
+    "materias": 3,
+    "ciclo_estudos": 10
+  },
+  "mappedCounts": {
+    "disciplines": 10,
+    "question_sessions": 0,
+    "discipline_notes": 0,
+    "study_hours": 0,
+    "studied_topics": 3,
+    "study_cycle_entries": 10
+  },
+  "invalidRows": [],
+  "normalization": {
+    "defaultDifficulty": 0,
+    "difficultyLabels": 0
+  },
+  "aggregates": {
+    "questionTotalsByDateDiscipline": {},
+    "hoursByDate": {},
+    "topicsByDateDiscipline": {
+      "2026-08-24|1": {
+        "records": 1
+      },
+      "2026-08-17|1": {
+        "records": 1
+      },
+      "2026-08-18|2": {
+        "records": 1
+      }
+    }
+  },
+  "checksums": {
+    "disciplines": "1f325bd638f0e29212c4ade61f203580f2232e1cf2edf53a25d56e1899da757e",
+    "questionSessions": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+    "disciplineNotes": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+    "studyHours": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+    "studiedTopics": "a0d0412be0ddbcc81483f6bdb91aca669d773375a04d8bd7a957f8fef7a4698b",
+    "studyCycleEntries": "c2e0d1203fa3ee0b86fcf75622624d53551e54fddee59bb69e3fd66b02d4b1c4"
+  },
+  "idempotency": {
+    "strategy": "preserve source integer IDs where available; upsert catalog by discipline ID; upsert owner by configured provider identity",
+    "duplicatePolicy": "same source ID and owner scope must be updated or skipped, never duplicated"
+  }
+}

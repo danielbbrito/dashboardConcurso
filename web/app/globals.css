@@ -1,0 +1,142 @@
+:root {
+  color-scheme: light;
+  --app-background: #f4f1eb;
+  --app-surface: #ffffff;
+  --app-ink: #17212b;
+  --app-muted: #64717d;
+  --app-border: #dce2e6;
+  --app-primary: #195da8;
+  --app-primary-dark: #12477f;
+  --app-sidebar: #10283f;
+  --app-focus: #f2a900;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--app-background);
+  color: var(--app-ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  &:focus-visible {
+    outline: 3px solid var(--app-focus);
+    outline-offset: 2px;
+  }
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  background: var(--app-sidebar);
+  color: #f5f8fb;
+  width: 17rem;
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.app-mobile-bar {
+  background: var(--app-sidebar);
+  color: #f5f8fb;
+}
+
+.app-nav-link {
+  color: #d7e3ee;
+  border-left: 3px solid transparent;
+}
+
+.app-nav-link:hover,
+.app-nav-link.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-left-color: #73b4f2;
+  color: #ffffff;
+}
+
+.app-drawer-backdrop {
+  background: rgba(9, 20, 31, 0.58);
+  inset: 0;
+  position: fixed;
+  z-index: 1030;
+}
+
+.app-drawer {
+  background: var(--app-sidebar);
+  color: #f5f8fb;
+  inset: 0 auto 0 0;
+  max-width: 20rem;
+  overflow-y: auto;
+  position: fixed;
+  width: 86vw;
+  z-index: 1040;
+}
+
+.app-empty-state {
+  background: var(--app-surface);
+  border: 1px dashed var(--app-border);
+}
+
+.responsive-data-table td[data-label] {
+  min-width: 8rem;
+}
+
+.markdown-preview {
+  min-height: 12rem;
+}
+
+@media (max-width: 767.98px) {
+  .responsive-data-table table,
+  .responsive-data-table thead,
+  .responsive-data-table tbody,
+  .responsive-data-table tr,
+  .responsive-data-table td {
+    display: block;
+  }
+
+  .responsive-data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .responsive-data-table tr {
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .responsive-data-table td {
+    border: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    text-align: right;
+  }
+
+  .responsive-data-table td::before {
+    color: var(--app-muted);
+    content: attr(data-label);
+    font-weight: 600;
+    text-align: left;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-main {
+    margin-left: 17rem;
+  }
+}

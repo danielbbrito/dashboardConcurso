@@ -1,0 +1,992 @@
+{
+  "expected": {
+    "all_chute": {
+      "daily_series": [
+        {
+          "acertos": 5,
+          "acertos_acum": 5,
+          "chutes": 10,
+          "chutes_acum": 10,
+          "chutes_certos": 5,
+          "chutes_certos_acum": 5,
+          "data": "2026-08-01",
+          "feitas": 10,
+          "feitas_acum": 10,
+          "nota_acum": 2.5,
+          "taxa_acum": 0.5,
+          "taxa_acum_seguro": 0.0
+        }
+      ],
+      "hours_daily": [],
+      "hours_weekly": [],
+      "kpis": {
+        "acertos": 5,
+        "acertos_sem_chute": 0,
+        "chutes": 10,
+        "chutes_certos": 5,
+        "chutes_errados": 5,
+        "erros": 5,
+        "feitas": 10,
+        "nota_cebraspe": 2.5,
+        "nota_cebraspe_pct": 0.25,
+        "pct_chutes": 1.0,
+        "taxa_acerto": 0.5,
+        "taxa_acerto_nao_chutadas": null,
+        "taxa_acerto_seguro": 0.0,
+        "taxa_chute_certo": 0.5
+      },
+      "ranking": [
+        {
+          "acertos": 5,
+          "bloco": "basico",
+          "chutes": 10,
+          "chutes_certos": 5,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "nota_cebraspe": 2.5,
+          "taxa_acerto": 0.5,
+          "taxa_acerto_seguro": 0.0
+        }
+      ],
+      "ranking_safe": [
+        {
+          "acertos": 5,
+          "bloco": "basico",
+          "chutes": 10,
+          "chutes_certos": 5,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "nota_cebraspe": 2.5,
+          "taxa_acerto": 0.5,
+          "taxa_acerto_seguro": 0.0
+        }
+      ],
+      "review_schedule": {
+        "por_sabado": {}
+      },
+      "topic_analytics": {
+        "materias_distintas": 0,
+        "por_dificuldade": [],
+        "por_materia": [],
+        "questoes_com_materia": 0,
+        "sessoes_com_materia": 0
+      },
+      "weekly_series": [
+        {
+          "acertos": 5,
+          "chutes": 10,
+          "chutes_certos": 5,
+          "data": "2026-07-27",
+          "data_fim": "2026-08-02",
+          "feitas": 10,
+          "taxa_semana": 0.5
+        }
+      ]
+    },
+    "empty": {
+      "daily_series": [],
+      "hours_daily": [],
+      "hours_weekly": [],
+      "kpis": {
+        "acertos": 0,
+        "acertos_sem_chute": 0,
+        "chutes": 0,
+        "chutes_certos": 0,
+        "chutes_errados": 0,
+        "erros": 0,
+        "feitas": 0,
+        "nota_cebraspe": 0.0,
+        "nota_cebraspe_pct": null,
+        "pct_chutes": null,
+        "taxa_acerto": null,
+        "taxa_acerto_nao_chutadas": null,
+        "taxa_acerto_seguro": null,
+        "taxa_chute_certo": null
+      },
+      "ranking": [],
+      "ranking_safe": [],
+      "review_schedule": {
+        "por_sabado": {}
+      },
+      "topic_analytics": {
+        "materias_distintas": 0,
+        "por_dificuldade": [],
+        "por_materia": [],
+        "questoes_com_materia": 0,
+        "sessoes_com_materia": 0
+      },
+      "weekly_series": []
+    },
+    "long_date_range": {
+      "comparison": {
+        "corte_a": "2026-06-15",
+        "corte_b": "2026-12-31",
+        "kpis_a": {
+          "acertos": 13,
+          "acertos_sem_chute": 11,
+          "chutes": 4,
+          "chutes_certos": 2,
+          "chutes_errados": 2,
+          "erros": 7,
+          "feitas": 20,
+          "nota_cebraspe": 9.5,
+          "nota_cebraspe_pct": 0.475,
+          "pct_chutes": 0.2,
+          "taxa_acerto": 0.65,
+          "taxa_acerto_nao_chutadas": 0.6875,
+          "taxa_acerto_seguro": 0.55,
+          "taxa_chute_certo": 0.5
+        },
+        "kpis_b": {
+          "acertos": 27,
+          "acertos_sem_chute": 25,
+          "chutes": 4,
+          "chutes_certos": 2,
+          "chutes_errados": 2,
+          "erros": 13,
+          "feitas": 40,
+          "nota_cebraspe": 20.5,
+          "nota_cebraspe_pct": 0.5125,
+          "pct_chutes": 0.1,
+          "taxa_acerto": 0.675,
+          "taxa_acerto_nao_chutadas": 0.6944444444444444,
+          "taxa_acerto_seguro": 0.625,
+          "taxa_chute_certo": 0.5
+        },
+        "por_disciplina": [
+          {
+            "bloco": "especifico",
+            "delta_pp": 70.0,
+            "disciplina_id": 2,
+            "feitas_a": 0,
+            "feitas_b": 20,
+            "feitas_periodo": 20,
+            "nome": "D2",
+            "taxa_a": null,
+            "taxa_b": 0.7
+          }
+        ]
+      },
+      "daily_series": [
+        {
+          "acertos": 5,
+          "acertos_acum": 5,
+          "chutes": 2,
+          "chutes_acum": 2,
+          "chutes_certos": 1,
+          "chutes_certos_acum": 1,
+          "data": "2026-01-01",
+          "feitas": 10,
+          "feitas_acum": 10,
+          "nota_acum": 2.5,
+          "taxa_acum": 0.5,
+          "taxa_acum_seguro": 0.4
+        },
+        {
+          "acertos": 8,
+          "acertos_acum": 13,
+          "chutes": 2,
+          "chutes_acum": 4,
+          "chutes_certos": 1,
+          "chutes_certos_acum": 2,
+          "data": "2026-06-15",
+          "feitas": 10,
+          "feitas_acum": 20,
+          "nota_acum": 9.5,
+          "taxa_acum": 0.65,
+          "taxa_acum_seguro": 0.55
+        },
+        {
+          "acertos": 14,
+          "acertos_acum": 27,
+          "chutes": 0,
+          "chutes_acum": 4,
+          "chutes_certos": 0,
+          "chutes_certos_acum": 2,
+          "data": "2026-12-31",
+          "feitas": 20,
+          "feitas_acum": 40,
+          "nota_acum": 20.5,
+          "taxa_acum": 0.675,
+          "taxa_acum_seguro": 0.625
+        }
+      ],
+      "hours_daily": [
+        {
+          "data": "2026-01-01",
+          "horas": 1.5,
+          "horas_acum": 1.5
+        },
+        {
+          "data": "2026-06-15",
+          "horas": 2.0,
+          "horas_acum": 3.5
+        },
+        {
+          "data": "2026-12-31",
+          "horas": 4.0,
+          "horas_acum": 7.5
+        }
+      ],
+      "hours_weekly": [
+        {
+          "data_fim": "2027-01-03",
+          "dias": 1,
+          "horas": 4.0,
+          "media_dia": 4.0,
+          "semana_inicio": "2026-12-28"
+        },
+        {
+          "data_fim": "2026-06-21",
+          "dias": 1,
+          "horas": 2.0,
+          "media_dia": 2.0,
+          "semana_inicio": "2026-06-15"
+        },
+        {
+          "data_fim": "2026-01-04",
+          "dias": 1,
+          "horas": 1.5,
+          "media_dia": 1.5,
+          "semana_inicio": "2025-12-29"
+        }
+      ],
+      "kpis": {
+        "acertos": 27,
+        "acertos_sem_chute": 25,
+        "chutes": 4,
+        "chutes_certos": 2,
+        "chutes_errados": 2,
+        "erros": 13,
+        "feitas": 40,
+        "nota_cebraspe": 20.5,
+        "nota_cebraspe_pct": 0.5125,
+        "pct_chutes": 0.1,
+        "taxa_acerto": 0.675,
+        "taxa_acerto_nao_chutadas": 0.6944444444444444,
+        "taxa_acerto_seguro": 0.625,
+        "taxa_chute_certo": 0.5
+      },
+      "ranking": [
+        {
+          "acertos": 14,
+          "bloco": "especifico",
+          "chutes": 0,
+          "chutes_certos": 0,
+          "disciplina_id": 2,
+          "feitas": 20,
+          "nome": "D2",
+          "nota_cebraspe": 11.0,
+          "taxa_acerto": 0.7,
+          "taxa_acerto_seguro": 0.7
+        },
+        {
+          "acertos": 13,
+          "bloco": "basico",
+          "chutes": 4,
+          "chutes_certos": 2,
+          "disciplina_id": 1,
+          "feitas": 20,
+          "nome": "D1",
+          "nota_cebraspe": 9.5,
+          "taxa_acerto": 0.65,
+          "taxa_acerto_seguro": 0.55
+        }
+      ],
+      "ranking_safe": [
+        {
+          "acertos": 14,
+          "bloco": "especifico",
+          "chutes": 0,
+          "chutes_certos": 0,
+          "disciplina_id": 2,
+          "feitas": 20,
+          "nome": "D2",
+          "nota_cebraspe": 11.0,
+          "taxa_acerto": 0.7,
+          "taxa_acerto_seguro": 0.7
+        },
+        {
+          "acertos": 13,
+          "bloco": "basico",
+          "chutes": 4,
+          "chutes_certos": 2,
+          "disciplina_id": 1,
+          "feitas": 20,
+          "nome": "D1",
+          "nota_cebraspe": 9.5,
+          "taxa_acerto": 0.65,
+          "taxa_acerto_seguro": 0.55
+        }
+      ],
+      "review_schedule": {
+        "por_sabado": {
+          "2026-01-03": 1,
+          "2027-01-02": 1
+        }
+      },
+      "topic_analytics": {
+        "materias_distintas": 0,
+        "por_dificuldade": [],
+        "por_materia": [],
+        "questoes_com_materia": 0,
+        "sessoes_com_materia": 0
+      },
+      "weekly_series": [
+        {
+          "acertos": 5,
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2025-12-29",
+          "data_fim": "2026-01-04",
+          "feitas": 10,
+          "taxa_semana": 0.5
+        },
+        {
+          "acertos": 8,
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2026-06-15",
+          "data_fim": "2026-06-21",
+          "feitas": 10,
+          "taxa_semana": 0.8
+        },
+        {
+          "acertos": 14,
+          "chutes": 0,
+          "chutes_certos": 0,
+          "data": "2026-12-28",
+          "data_fim": "2027-01-03",
+          "feitas": 20,
+          "taxa_semana": 0.7
+        }
+      ]
+    },
+    "multi_row": {
+      "daily_series": [
+        {
+          "acertos": 8,
+          "acertos_acum": 8,
+          "chutes": 2,
+          "chutes_acum": 2,
+          "chutes_certos": 1,
+          "chutes_certos_acum": 1,
+          "data": "2026-08-01",
+          "feitas": 10,
+          "feitas_acum": 10,
+          "nota_acum": 7.0,
+          "taxa_acum": 0.8,
+          "taxa_acum_seguro": 0.7
+        },
+        {
+          "acertos": 2,
+          "acertos_acum": 10,
+          "chutes": 1,
+          "chutes_acum": 3,
+          "chutes_certos": 0,
+          "chutes_certos_acum": 1,
+          "data": "2026-08-02",
+          "feitas": 5,
+          "feitas_acum": 15,
+          "nota_acum": 7.5,
+          "taxa_acum": 0.6666666666666666,
+          "taxa_acum_seguro": 0.6
+        }
+      ],
+      "hours_daily": [
+        {
+          "data": "2026-08-01",
+          "horas": 3.5,
+          "horas_acum": 3.5
+        },
+        {
+          "data": "2026-08-02",
+          "horas": 3.0,
+          "horas_acum": 6.5
+        }
+      ],
+      "hours_weekly": [
+        {
+          "data_fim": "2026-08-02",
+          "dias": 2,
+          "horas": 6.5,
+          "media_dia": 3.25,
+          "semana_inicio": "2026-07-27"
+        }
+      ],
+      "kpis": {
+        "acertos": 10,
+        "acertos_sem_chute": 9,
+        "chutes": 3,
+        "chutes_certos": 1,
+        "chutes_errados": 2,
+        "erros": 5,
+        "feitas": 15,
+        "nota_cebraspe": 7.5,
+        "nota_cebraspe_pct": 0.5,
+        "pct_chutes": 0.2,
+        "taxa_acerto": 0.6666666666666666,
+        "taxa_acerto_nao_chutadas": 0.75,
+        "taxa_acerto_seguro": 0.6,
+        "taxa_chute_certo": 0.3333333333333333
+      },
+      "ranking": [
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "nota_cebraspe": 7.0,
+          "taxa_acerto": 0.8,
+          "taxa_acerto_seguro": 0.7
+        },
+        {
+          "acertos": 2,
+          "bloco": "especifico",
+          "chutes": 1,
+          "chutes_certos": 0,
+          "disciplina_id": 2,
+          "feitas": 5,
+          "nome": "D2",
+          "nota_cebraspe": 0.5,
+          "taxa_acerto": 0.4,
+          "taxa_acerto_seguro": 0.4
+        }
+      ],
+      "ranking_safe": [
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "nota_cebraspe": 7.0,
+          "taxa_acerto": 0.8,
+          "taxa_acerto_seguro": 0.7
+        },
+        {
+          "acertos": 2,
+          "bloco": "especifico",
+          "chutes": 1,
+          "chutes_certos": 0,
+          "disciplina_id": 2,
+          "feitas": 5,
+          "nome": "D2",
+          "nota_cebraspe": 0.5,
+          "taxa_acerto": 0.4,
+          "taxa_acerto_seguro": 0.4
+        }
+      ],
+      "review_schedule": {
+        "por_sabado": {
+          "2026-08-01": 1,
+          "2026-08-08": 1
+        }
+      },
+      "topic_analytics": {
+        "materias_distintas": 2,
+        "por_dificuldade": [
+          {
+            "acertos": 10,
+            "difficulty": "Medio",
+            "dificuldade_media": 3.0,
+            "feitas": 15,
+            "sessoes": 2,
+            "taxa_acerto": 0.6666666666666666
+          }
+        ],
+        "por_materia": [
+          {
+            "acertos": 8,
+            "dificuldade_media": 3.0,
+            "disciplina_id": 1,
+            "feitas": 10,
+            "sessoes": 1,
+            "subtopic": null,
+            "taxa_acerto": 0.8,
+            "topic": "Topico A"
+          },
+          {
+            "acertos": 2,
+            "dificuldade_media": 3.0,
+            "disciplina_id": 2,
+            "feitas": 5,
+            "sessoes": 1,
+            "subtopic": null,
+            "taxa_acerto": 0.4,
+            "topic": "Topico B"
+          }
+        ],
+        "questoes_com_materia": 15,
+        "sessoes_com_materia": 2
+      },
+      "weekly_series": [
+        {
+          "acertos": 10,
+          "chutes": 3,
+          "chutes_certos": 1,
+          "data": "2026-07-27",
+          "data_fim": "2026-08-02",
+          "feitas": 15,
+          "taxa_semana": 0.6666666666666666
+        }
+      ]
+    },
+    "one_row": {
+      "daily_series": [
+        {
+          "acertos": 8,
+          "acertos_acum": 8,
+          "chutes": 2,
+          "chutes_acum": 2,
+          "chutes_certos": 1,
+          "chutes_certos_acum": 1,
+          "data": "2026-08-01",
+          "feitas": 10,
+          "feitas_acum": 10,
+          "nota_acum": 7.0,
+          "taxa_acum": 0.8,
+          "taxa_acum_seguro": 0.7
+        }
+      ],
+      "hours_daily": [
+        {
+          "data": "2026-08-01",
+          "horas": 2.5,
+          "horas_acum": 2.5
+        }
+      ],
+      "hours_weekly": [
+        {
+          "data_fim": "2026-08-02",
+          "dias": 1,
+          "horas": 2.5,
+          "media_dia": 2.5,
+          "semana_inicio": "2026-07-27"
+        }
+      ],
+      "kpis": {
+        "acertos": 8,
+        "acertos_sem_chute": 7,
+        "chutes": 2,
+        "chutes_certos": 1,
+        "chutes_errados": 1,
+        "erros": 2,
+        "feitas": 10,
+        "nota_cebraspe": 7.0,
+        "nota_cebraspe_pct": 0.7,
+        "pct_chutes": 0.2,
+        "taxa_acerto": 0.8,
+        "taxa_acerto_nao_chutadas": 0.875,
+        "taxa_acerto_seguro": 0.7,
+        "taxa_chute_certo": 0.5
+      },
+      "ranking": [
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "nota_cebraspe": 7.0,
+          "taxa_acerto": 0.8,
+          "taxa_acerto_seguro": 0.7
+        }
+      ],
+      "ranking_safe": [
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "nota_cebraspe": 7.0,
+          "taxa_acerto": 0.8,
+          "taxa_acerto_seguro": 0.7
+        }
+      ],
+      "review_schedule": {
+        "por_sabado": {
+          "2026-08-01": 1
+        }
+      },
+      "topic_analytics": {
+        "materias_distintas": 0,
+        "por_dificuldade": [],
+        "por_materia": [],
+        "questoes_com_materia": 0,
+        "sessoes_com_materia": 0
+      },
+      "weekly_series": [
+        {
+          "acertos": 8,
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2026-07-27",
+          "data_fim": "2026-08-02",
+          "feitas": 10,
+          "taxa_semana": 0.8
+        }
+      ]
+    },
+    "zero_chute": {
+      "daily_series": [
+        {
+          "acertos": 60,
+          "acertos_acum": 60,
+          "chutes": 0,
+          "chutes_acum": 0,
+          "chutes_certos": 0,
+          "chutes_certos_acum": 0,
+          "data": "2026-08-01",
+          "feitas": 100,
+          "feitas_acum": 100,
+          "nota_acum": 40.0,
+          "taxa_acum": 0.6,
+          "taxa_acum_seguro": 0.6
+        }
+      ],
+      "hours_daily": [],
+      "hours_weekly": [],
+      "kpis": {
+        "acertos": 60,
+        "acertos_sem_chute": 60,
+        "chutes": 0,
+        "chutes_certos": 0,
+        "chutes_errados": 0,
+        "erros": 40,
+        "feitas": 100,
+        "nota_cebraspe": 40.0,
+        "nota_cebraspe_pct": 0.4,
+        "pct_chutes": 0.0,
+        "taxa_acerto": 0.6,
+        "taxa_acerto_nao_chutadas": 0.6,
+        "taxa_acerto_seguro": 0.6,
+        "taxa_chute_certo": null
+      },
+      "ranking": [
+        {
+          "acertos": 60,
+          "bloco": "basico",
+          "chutes": 0,
+          "chutes_certos": 0,
+          "disciplina_id": 1,
+          "feitas": 100,
+          "nome": "D1",
+          "nota_cebraspe": 40.0,
+          "taxa_acerto": 0.6,
+          "taxa_acerto_seguro": 0.6
+        }
+      ],
+      "ranking_safe": [
+        {
+          "acertos": 60,
+          "bloco": "basico",
+          "chutes": 0,
+          "chutes_certos": 0,
+          "disciplina_id": 1,
+          "feitas": 100,
+          "nome": "D1",
+          "nota_cebraspe": 40.0,
+          "taxa_acerto": 0.6,
+          "taxa_acerto_seguro": 0.6
+        }
+      ],
+      "review_schedule": {
+        "por_sabado": {}
+      },
+      "topic_analytics": {
+        "materias_distintas": 0,
+        "por_dificuldade": [],
+        "por_materia": [],
+        "questoes_com_materia": 0,
+        "sessoes_com_materia": 0
+      },
+      "weekly_series": [
+        {
+          "acertos": 60,
+          "chutes": 0,
+          "chutes_certos": 0,
+          "data": "2026-07-27",
+          "data_fim": "2026-08-02",
+          "feitas": 100,
+          "taxa_semana": 0.6
+        }
+      ]
+    }
+  },
+  "fixture_version": 1,
+  "fixtures": {
+    "all_chute": {
+      "hours": [],
+      "questions": [
+        {
+          "acertos": 5,
+          "bloco": "basico",
+          "chutes": 10,
+          "chutes_certos": 5,
+          "data": "2026-08-01",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "subtopic": null,
+          "topic": null
+        }
+      ],
+      "topics": []
+    },
+    "empty": {
+      "hours": [],
+      "questions": [],
+      "topics": []
+    },
+    "long_date_range": {
+      "comparison": {
+        "corte_a": "2026-06-15",
+        "corte_b": "2026-12-31",
+        "kpis_a": {
+          "acertos": 13,
+          "acertos_sem_chute": 11,
+          "chutes": 4,
+          "chutes_certos": 2,
+          "chutes_errados": 2,
+          "erros": 7,
+          "feitas": 20,
+          "nota_cebraspe": 9.5,
+          "nota_cebraspe_pct": 0.475,
+          "pct_chutes": 0.2,
+          "taxa_acerto": 0.65,
+          "taxa_acerto_nao_chutadas": 0.6875,
+          "taxa_acerto_seguro": 0.55,
+          "taxa_chute_certo": 0.5
+        },
+        "kpis_b": {
+          "acertos": 27,
+          "acertos_sem_chute": 25,
+          "chutes": 4,
+          "chutes_certos": 2,
+          "chutes_errados": 2,
+          "erros": 13,
+          "feitas": 40,
+          "nota_cebraspe": 20.5,
+          "nota_cebraspe_pct": 0.5125,
+          "pct_chutes": 0.1,
+          "taxa_acerto": 0.675,
+          "taxa_acerto_nao_chutadas": 0.6944444444444444,
+          "taxa_acerto_seguro": 0.625,
+          "taxa_chute_certo": 0.5
+        },
+        "por_disciplina": [
+          {
+            "bloco": "especifico",
+            "delta_pp": 70.0,
+            "disciplina_id": 2,
+            "feitas_a": 0,
+            "feitas_b": 20,
+            "feitas_periodo": 20,
+            "nome": "D2",
+            "taxa_a": null,
+            "taxa_b": 0.7
+          }
+        ]
+      },
+      "hours": [
+        {
+          "data": "2026-01-01",
+          "horas": 1.5
+        },
+        {
+          "data": "2026-06-15",
+          "horas": 2.0
+        },
+        {
+          "data": "2026-12-31",
+          "horas": 4.0
+        }
+      ],
+      "questions": [
+        {
+          "acertos": 5,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2026-01-01",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "subtopic": null,
+          "topic": null
+        },
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2026-06-15",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "subtopic": null,
+          "topic": null
+        },
+        {
+          "acertos": 14,
+          "bloco": "especifico",
+          "chutes": 0,
+          "chutes_certos": 0,
+          "data": "2026-12-31",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 2,
+          "feitas": 20,
+          "nome": "D2",
+          "subtopic": null,
+          "topic": null
+        }
+      ],
+      "topics": [
+        {
+          "data": "2026-01-01",
+          "disciplina_id": 1,
+          "subtopic": null,
+          "topic": "Topico A"
+        },
+        {
+          "data": "2026-12-31",
+          "disciplina_id": 2,
+          "subtopic": null,
+          "topic": "Simulado"
+        }
+      ]
+    },
+    "multi_row": {
+      "hours": [
+        {
+          "data": "2026-08-01",
+          "horas": 2.0
+        },
+        {
+          "data": "2026-08-01",
+          "horas": 1.5
+        },
+        {
+          "data": "2026-08-02",
+          "horas": 3.0
+        }
+      ],
+      "questions": [
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2026-08-01",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "subtopic": null,
+          "topic": "Topico A"
+        },
+        {
+          "acertos": 2,
+          "bloco": "especifico",
+          "chutes": 1,
+          "chutes_certos": 0,
+          "data": "2026-08-02",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 2,
+          "feitas": 5,
+          "nome": "D2",
+          "subtopic": null,
+          "topic": "Topico B"
+        }
+      ],
+      "topics": [
+        {
+          "data": "2026-08-01",
+          "disciplina_id": 1,
+          "subtopic": "Sub A",
+          "topic": "Topico A"
+        },
+        {
+          "data": "2026-08-06",
+          "disciplina_id": 2,
+          "subtopic": null,
+          "topic": "Topico B"
+        }
+      ]
+    },
+    "one_row": {
+      "hours": [
+        {
+          "data": "2026-08-01",
+          "horas": 2.5
+        }
+      ],
+      "questions": [
+        {
+          "acertos": 8,
+          "bloco": "basico",
+          "chutes": 2,
+          "chutes_certos": 1,
+          "data": "2026-08-01",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 1,
+          "feitas": 10,
+          "nome": "D1",
+          "subtopic": null,
+          "topic": null
+        }
+      ],
+      "topics": [
+        {
+          "data": "2026-08-01",
+          "disciplina_id": 1,
+          "subtopic": null,
+          "topic": "Topico A"
+        }
+      ]
+    },
+    "zero_chute": {
+      "hours": [],
+      "questions": [
+        {
+          "acertos": 60,
+          "bloco": "basico",
+          "chutes": 0,
+          "chutes_certos": 0,
+          "data": "2026-08-01",
+          "difficulty": "Medio",
+          "difficulty_value": 3,
+          "disciplina_id": 1,
+          "feitas": 100,
+          "nome": "D1",
+          "subtopic": null,
+          "topic": null
+        }
+      ],
+      "topics": []
+    }
+  }
+}

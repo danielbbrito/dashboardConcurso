@@ -1,0 +1,238 @@
+{
+  "catalog": [
+    {
+      "bloco": "basico",
+      "id": 1,
+      "itens_prova": 25,
+      "nome": "L\u00edngua Portuguesa",
+      "ordem": 1
+    },
+    {
+      "bloco": "basico",
+      "id": 2,
+      "itens_prova": 10,
+      "nome": "No\u00e7\u00f5es de L\u00f3gica e Estat\u00edstica",
+      "ordem": 2
+    },
+    {
+      "bloco": "basico",
+      "id": 3,
+      "itens_prova": 5,
+      "nome": "Direito Administrativo",
+      "ordem": 3
+    },
+    {
+      "bloco": "basico",
+      "id": 4,
+      "itens_prova": 10,
+      "nome": "Fundamentos de Macro e Microeconomia",
+      "ordem": 4
+    },
+    {
+      "bloco": "especifico",
+      "id": 5,
+      "itens_prova": 14,
+      "nome": "Ci\u00eancia de Dados",
+      "ordem": 5
+    },
+    {
+      "bloco": "especifico",
+      "id": 6,
+      "itens_prova": 7,
+      "nome": "Seguran\u00e7a da Informa\u00e7\u00e3o",
+      "ordem": 6
+    },
+    {
+      "bloco": "especifico",
+      "id": 7,
+      "itens_prova": 24,
+      "nome": "Engenharia de Software",
+      "ordem": 7
+    },
+    {
+      "bloco": "especifico",
+      "id": 8,
+      "itens_prova": 17,
+      "nome": "Infraestrutura em TI",
+      "ordem": 8
+    },
+    {
+      "bloco": "especifico",
+      "id": 9,
+      "itens_prova": 4,
+      "nome": "Bancos de Dados",
+      "ordem": 9
+    },
+    {
+      "bloco": "especifico",
+      "id": 10,
+      "itens_prova": 4,
+      "nome": "Gest\u00e3o em TI",
+      "ordem": 10
+    }
+  ],
+  "cycle": [
+    {
+      "disciplina_id": 1,
+      "horas": 1.0,
+      "posicao": 1
+    },
+    {
+      "disciplina_id": 2,
+      "horas": 1.0,
+      "posicao": 2
+    },
+    {
+      "disciplina_id": 3,
+      "horas": 1.0,
+      "posicao": 3
+    },
+    {
+      "disciplina_id": 4,
+      "horas": 1.0,
+      "posicao": 4
+    },
+    {
+      "disciplina_id": 5,
+      "horas": 1.0,
+      "posicao": 5
+    },
+    {
+      "disciplina_id": 6,
+      "horas": 1.0,
+      "posicao": 6
+    },
+    {
+      "disciplina_id": 7,
+      "horas": 1.0,
+      "posicao": 7
+    },
+    {
+      "disciplina_id": 8,
+      "horas": 1.0,
+      "posicao": 8
+    },
+    {
+      "disciplina_id": 9,
+      "horas": 1.0,
+      "posicao": 9
+    },
+    {
+      "disciplina_id": 10,
+      "horas": 1.0,
+      "posicao": 10
+    }
+  ],
+  "hours_by_date": [],
+  "manifest_version": 1,
+  "notes": [],
+  "question_by_date": [],
+  "question_by_discipline": [],
+  "question_totals": {
+    "acertos": 0,
+    "acertos_sem_chute": 0,
+    "chutes": 0,
+    "chutes_certos": 0,
+    "chutes_errados": 0,
+    "erros": 0,
+    "feitas": 0,
+    "nota_cebraspe": 0.0,
+    "nota_cebraspe_pct": null,
+    "pct_chutes": null,
+    "taxa_acerto": null,
+    "taxa_acerto_nao_chutadas": null,
+    "taxa_acerto_seguro": null,
+    "taxa_chute_certo": null
+  },
+  "row_counts": {
+    "anotacoes": 0,
+    "ciclo_estudos": 10,
+    "disciplinas": 10,
+    "horas_estudo": 0,
+    "materias": 3,
+    "registros": 0
+  },
+  "schema": {
+    "anotacoes": [
+      "disciplina_id",
+      "texto",
+      "atualizado_em"
+    ],
+    "ciclo_estudos": [
+      "id",
+      "posicao",
+      "disciplina_id",
+      "horas"
+    ],
+    "disciplinas": [
+      "id",
+      "nome",
+      "bloco",
+      "itens_prova",
+      "ordem"
+    ],
+    "horas_estudo": [
+      "id",
+      "data",
+      "horas",
+      "criado_em"
+    ],
+    "materias": [
+      "id",
+      "data",
+      "disciplina_id",
+      "materia",
+      "submateria",
+      "criado_em"
+    ],
+    "registros": [
+      "id",
+      "data",
+      "disciplina_id",
+      "feitas",
+      "acertos",
+      "chutes",
+      "chutes_certos",
+      "criado_em"
+    ]
+  },
+  "source": {
+    "copy_relative_path": "web/phase0/.reference/estudos-reference.sqlite3",
+    "copy_sha256": "44c3b77520c8e9e6952e36da098a3a7a767bc9a011376515a625266fa7e1620f",
+    "label": "local-sqlite",
+    "relative_path": "data/estudos.db",
+    "sha256": "5dbf32875a1940b1fbc3b8f22d43cd8e9f1e2c0e017b5d56f52a0e3c9babf27c"
+  },
+  "topics": {
+    "by_date_discipline": [
+      {
+        "data": "2026-08-17",
+        "disciplina_id": 1,
+        "materias_distintas": 1,
+        "nome": "L\u00edngua Portuguesa",
+        "registros": 1
+      },
+      {
+        "data": "2026-08-18",
+        "disciplina_id": 2,
+        "materias_distintas": 1,
+        "nome": "No\u00e7\u00f5es de L\u00f3gica e Estat\u00edstica",
+        "registros": 1
+      },
+      {
+        "data": "2026-08-24",
+        "disciplina_id": 1,
+        "materias_distintas": 1,
+        "nome": "L\u00edngua Portuguesa",
+        "registros": 1
+      }
+    ],
+    "review_schedule": {
+      "por_sabado": {
+        "2026-08-22": 2,
+        "2026-08-29": 1
+      }
+    },
+    "total": 3
+  }
+}

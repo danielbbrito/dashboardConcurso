@@ -1,0 +1,19 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+
+import { FeedbackAlert } from "@/components/query-states";
+import type { DateOnly, Discipline } from "@/lib/domain";
+
+type TopicCatalog = Readonly<Record<string, readonly (readonly [string, readonly string[]])[]>>;
+
+export function StudiedTopicForm({ catalog, disciplines, today }: { catalog: TopicCatalog; disciplines: Discipline[]; today: DateOnly }) {
+  const router = useRouter();
+  const [values, setValues] = useState({ studyDate: today, disciplineId: String(disciplines[0]?.id ?? ""), topic: "", subtopic: "" });
+  const [error, setError] = useState<string | null>(null); const [success, setSuccess] = useState(false); const [pending, setPending] = useState(false);
+  const topics = catalog[values.disciplineId] ?? []; const subtopics = topics.find(([topic]) => topic === values.topic)?.[1] ?? [];
+  function update(key: keyof typeof values, value: string) { setValues((current) => ({ ...current, [key]: value, ...(key === "disciplineId" || key === "topic" ? { subtopic: "" } : {}) })); }
+  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); if (pending) return; setPending(true); setError(null); setSuccess(false); try { const response = await fetch("/api/studied-topics", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ studyDate: values.studyDate, disciplineId: Number(values.disciplineId), topic: values.topic, subtopic: values.subtopic || null }) }); const payload = await response.json() as { data?: unknown; error?: { message?: string } }; if (!response.ok || !payload.data) { setError(payload.error?.message ?? "Não foi possível salvar a matéria."); return; } setSuccess(true); setValues((current) => ({ ...current, topic: "", subtopic: "" })); router.refresh(); } catch { setError("Não foi possível conectar ao servidor."); } finally { setPending(false); } }
+  return <form onSubmit={submit}><div className="row g-3"><div className="col-md-4"><label className="form-label fw-semibold" htmlFor="topic-date">Data</label><input className="form-control" id="topic-date" max={today} onChange={(event) => update("studyDate", event.target.value)} type="date" value={values.studyDate} /></div><div className="col-md-4"><label className="form-label fw-semibold" htmlFor="topic-discipline">Disciplina</label><select className="form-select" id="topic-discipline" onChange={(event) => update("disciplineId", event.target.value)} value={values.disciplineId}>{disciplines.map((discipline) => <option key={discipline.id} value={discipline.id}>{discipline.name}</option>)}</select></div><div className="col-md-4"><label className="form-label fw-semibold" htmlFor="topic-name">Matéria</label><select className="form-select" id="topic-name" onChange={(event) => update("topic", event.target.value)} value={values.topic}><option value="">Selecione uma matéria</option>{topics.map(([topic]) => <option key={topic} value={topic}>{topic}</option>)}<option value="Simulado">Simulado</option></select></div><div className="col-md-8"><label className="form-label fw-semibold" htmlFor="topic-subtopic">Subtópico (opcional)</label><select className="form-select" disabled={!values.topic || subtopics.length === 0} id="topic-subtopic" onChange={(event) => update("subtopic", event.target.value)} value={values.subtopic}><option value="">Selecione um subtópico</option>{subtopics.map((subtopic) => <option key={subtopic} value={subtopic}>{subtopic}</option>)}</select></div><div className="col-md-4 d-flex align-items-end"><button className="btn btn-primary w-100" disabled={pending} type="submit">{pending ? "Salvando..." : "Registrar matéria"}</button></div></div>{error ? <div className="alert alert-danger mt-3" role="alert">{error}</div> : null}{success ? <FeedbackAlert>Matéria registrada e disponível para revisão.</FeedbackAlert> : null}</form>;
+}

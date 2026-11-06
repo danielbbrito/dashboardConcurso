@@ -1,0 +1,46 @@
+{
+  "name": "concurso-dashboard-web",
+  "version": "0.1.0",
+  "private": true,
+  "overrides": {
+    "object.fromentries": "2.0.7"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "NODE_OPTIONS=--require=./scripts/test-server-only.cjs tsx --test \"lib/**/*.test.ts\"",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "NODE_OPTIONS=--require=./scripts/test-server-only.cjs tsx scripts/seed.ts",
+    "db:migrate:dry-run": "tsx scripts/migrate-legacy.ts",
+    "db:migrate:execute": "tsx scripts/import-legacy.ts",
+    "db:migrate:verify": "tsx scripts/verify-migration.ts"
+    ,"check:build-output": "node scripts/check-build-output.mjs"
+    ,"smoke:local": "node scripts/smoke-local.mjs"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "bootstrap": "^5.3.8",
+    "drizzle-orm": "^0.45.4",
+    "next": "16.4.2",
+    "next-auth": "^4.24.15",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.10.1",
+    "rehype-sanitize": "^6.0.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.4.2",
+    "tsx": "^4.20.6",
+    "typescript": "5.9.3"
+  }
+}
