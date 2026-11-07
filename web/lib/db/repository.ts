@@ -132,13 +132,33 @@ export async function upsertUser(input: {
   providerSubject: string;
   email: string;
 }): Promise<typeof users.$inferSelect> {
+  const email = input.email.trim().toLowerCase();
+  const [existingByProvider] = await db
+    .select()
+    .from(users)
+    .where(eq(users.providerSubject, input.providerSubject))
+    .limit(1);
+  const [existingByEmail] = existingByProvider
+    ? [undefined]
+    : await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+  if (existingByProvider || existingByEmail) {
+    const [user] = await db
+      .update(users)
+      .set({
+        providerSubject: input.providerSubject,
+        email,
+        lastLoginAt: sql`datetime('now')`,
+      })
+      .where(eq(users.id, (existingByProvider ?? existingByEmail)!.id))
+      .returning();
+    if (!user) throw new Error("User update did not return a row");
+    return user;
+  }
+
   const [user] = await db
     .insert(users)
-    .values({ ...input, email: input.email.trim().toLowerCase() })
-    .onConflictDoUpdate({
-      target: users.providerSubject,
-      set: { email: input.email.trim().toLowerCase(), lastLoginAt: sql`datetime('now')` },
-    })
+    .values({ ...input, email })
     .returning();
   if (!user) throw new Error("User upsert did not return a row");
   return user;

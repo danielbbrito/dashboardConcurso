@@ -4,7 +4,8 @@ import { formatNumber, formatPercent } from "@/lib/format";
 import { getServerEnv } from "@/lib/env";
 import { parseFilters } from "@/lib/filters";
 import { getOverviewData } from "@/lib/overview";
-import { todayDateOnly, type UserId } from "@/lib/domain";
+import { todayDateOnly } from "@/lib/domain";
+import { ensureApplicationUser } from "@/lib/application-user";
 import { FilterBar } from "@/components/filter-bar";
 import { EmptyState } from "@/components/query-states";
 import { OverviewChartsLoader } from "@/components/overview-charts-loader";
@@ -31,7 +32,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
   const env = getServerEnv();
   const today = todayDateOnly(env.timezone);
   const filters = parseFilters(await searchParams, today);
-  const userId = (user.providerSubject ?? "development-local") as UserId;
+  const userId = await ensureApplicationUser(user);
   const [disciplines, overview] = await Promise.all([listDisciplines(), getOverviewData(userId, filters)]);
   const hasQuestions = overview.kpis.attempted > 0;
   const rankingRows = overview.ranking.map((row) => ({ ...row, id: row.disciplineId }));

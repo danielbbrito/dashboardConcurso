@@ -1,7 +1,8 @@
 import { apiError, apiSuccess, apiServerError } from "@/lib/api";
 import { resolveAuthorizedUser } from "@/lib/authorization";
+import { ensureApplicationUser } from "@/lib/application-user";
 import { aggregateQuestionKpis, listQuestionMetricRows } from "@/lib/db/repository";
-import { dailySeries, weeklySeries, type UserId } from "@/lib/domain";
+import { dailySeries, weeklySeries } from "@/lib/domain";
 import { getServerEnv } from "@/lib/env";
 import { parseFilters } from "@/lib/filters";
 import { todayDateOnly } from "@/lib/domain";
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
     const env = getServerEnv();
     const url = new URL(request.url);
     const filters = parseFilters(url.searchParams, todayDateOnly(env.timezone));
-    const userId = (authorization.user.providerSubject ?? "development-local") as UserId;
+    const userId = await ensureApplicationUser(authorization.user);
     const repositoryFilters = { from: filters.from, to: filters.to, disciplineIds: filters.disciplineIds };
     const [kpis, rows] = await Promise.all([
       aggregateQuestionKpis(userId, repositoryFilters),

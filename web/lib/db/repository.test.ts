@@ -22,6 +22,11 @@ test("repositories scope user data and keep cycle mutations atomic", async () =>
   ]);
 
   const repository = await import("./repository");
+  const migratedUser = await repository.upsertUser({ id: "migration-owner" as UserId, providerSubject: "migration:owner", email: "owner@example.com" });
+  const claimedUser = await repository.upsertUser({ id: "google-subject" as UserId, providerSubject: "google-subject", email: "OWNER@example.com" });
+  assert.equal(claimedUser.id, migratedUser.id);
+  assert.equal(claimedUser.providerSubject, "google-subject");
+
   const userOne = "user-one" as UserId;
   const userTwo = "user-two" as UserId;
   const disciplineOne = 1 as DisciplineId;

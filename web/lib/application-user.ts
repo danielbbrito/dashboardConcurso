@@ -9,6 +9,6 @@ export async function ensureApplicationUser(user: AuthorizedUser): Promise<UserI
   const providerSubject = user.providerSubject ?? "development-local";
   const email = user.isLocal ? "development-local@example.invalid" : user.email;
   const id = providerSubject as UserId;
-  await upsertUser({ id, providerSubject, email });
-  return id;
+  const applicationUser = await upsertUser({ id, providerSubject, email });
+  return applicationUser.id as UserId;
 }
