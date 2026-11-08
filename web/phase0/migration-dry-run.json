@@ -3,8 +3,8 @@
   "dryRun": true,
   "writesPerformed": 0,
   "source": {
-    "relativePath": "../data/estudos.db",
-    "sha256": "98fba731e65a8be02188b7cb86a916baa1cce27d5007afa3184b14c397b8d586",
+    "relativePath": "../../../../../tmp/concurso-production.sqlite3",
+    "sha256": "17247455eaf46a0f534420a95b613b783b58b7cb5ab00ab2f97f8c55d2b5e099",
     "schema": {
       "disciplinas": [
         "id",
@@ -58,50 +58,1438 @@
     "email": "danieldebrito2105@gmail.com",
     "assignment": "operator-configured owner; never inferred from login"
   },
-  "validationDate": "2026-11-06",
+  "validationDate": "2026-11-07",
   "sourceCounts": {
     "disciplinas": 10,
-    "registros": 0,
-    "anotacoes": 0,
-    "horas_estudo": 0,
-    "materias": 3,
+    "registros": 191,
+    "anotacoes": 1,
+    "horas_estudo": 58,
+    "materias": 71,
     "ciclo_estudos": 10
   },
   "mappedCounts": {
     "disciplines": 10,
-    "question_sessions": 0,
-    "discipline_notes": 0,
-    "study_hours": 0,
-    "studied_topics": 3,
+    "question_sessions": 191,
+    "discipline_notes": 1,
+    "study_hours": 58,
+    "studied_topics": 71,
     "study_cycle_entries": 10
   },
   "invalidRows": [],
   "normalization": {
-    "defaultDifficulty": 0,
-    "difficultyLabels": 0
+    "defaultDifficulty": 65,
+    "difficultyLabels": 126
   },
   "aggregates": {
-    "questionTotalsByDateDiscipline": {},
-    "hoursByDate": {},
-    "topicsByDateDiscipline": {
-      "2026-08-24|1": {
-        "records": 1
-      },
+    "questionTotalsByDateDiscipline": {
       "2026-08-17|1": {
+        "attempted": 25,
+        "correct": 16,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-08-17|2": {
+        "attempted": 10,
+        "correct": 7,
+        "guesses": 5,
+        "correctGuesses": 3
+      },
+      "2026-08-17|3": {
+        "attempted": 5,
+        "correct": 2,
+        "guesses": 5,
+        "correctGuesses": 2
+      },
+      "2026-08-17|4": {
+        "attempted": 10,
+        "correct": 4,
+        "guesses": 9,
+        "correctGuesses": 3
+      },
+      "2026-08-17|5": {
+        "attempted": 14,
+        "correct": 9,
+        "guesses": 3,
+        "correctGuesses": 1
+      },
+      "2026-08-17|6": {
+        "attempted": 7,
+        "correct": 5,
+        "guesses": 5,
+        "correctGuesses": 3
+      },
+      "2026-08-17|7": {
+        "attempted": 24,
+        "correct": 18,
+        "guesses": 6,
+        "correctGuesses": 2
+      },
+      "2026-08-17|8": {
+        "attempted": 21,
+        "correct": 16,
+        "guesses": 6,
+        "correctGuesses": 4
+      },
+      "2026-08-17|10": {
+        "attempted": 4,
+        "correct": 3,
+        "guesses": 2,
+        "correctGuesses": 1
+      },
+      "2026-08-18|1": {
+        "attempted": 19,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-19|7": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-19|4": {
+        "attempted": 3,
+        "correct": 2,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-20|4": {
+        "attempted": 3,
+        "correct": 2,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-20|9": {
+        "attempted": 8,
+        "correct": 4,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-20|7": {
+        "attempted": 15,
+        "correct": 13,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-21|2": {
+        "attempted": 17,
+        "correct": 13,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-22|5": {
+        "attempted": 20,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-23|8": {
+        "attempted": 11,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-24|10": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-25|1": {
+        "attempted": 18,
+        "correct": 15,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-25|7": {
+        "attempted": 4,
+        "correct": 3,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-26|7": {
+        "attempted": 22,
+        "correct": 14,
+        "guesses": 2,
+        "correctGuesses": 0
+      },
+      "2026-08-26|1": {
+        "attempted": 6,
+        "correct": 4,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-26|10": {
+        "attempted": 6,
+        "correct": 5,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-27|4": {
+        "attempted": 12,
+        "correct": 10,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-27|1": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-27|9": {
+        "attempted": 21,
+        "correct": 13,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-28|2": {
+        "attempted": 5,
+        "correct": 2,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-31|6": {
+        "attempted": 22,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-08-31|3": {
+        "attempted": 22,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-01|7": {
+        "attempted": 42,
+        "correct": 30,
+        "guesses": 6,
+        "correctGuesses": 2
+      },
+      "2026-09-01|8": {
+        "attempted": 11,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-02|10": {
+        "attempted": 27,
+        "correct": 25,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-02|1": {
+        "attempted": 35,
+        "correct": 31,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-03|7": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-04|4": {
+        "attempted": 15,
+        "correct": 12,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-05|1": {
+        "attempted": 25,
+        "correct": 23,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-05|7": {
+        "attempted": 24,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-05|9": {
+        "attempted": 10,
+        "correct": 10,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-06|2": {
+        "attempted": 30,
+        "correct": 28,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-06|3": {
+        "attempted": 20,
+        "correct": 14,
+        "guesses": 2,
+        "correctGuesses": 1
+      },
+      "2026-09-07|6": {
+        "attempted": 14,
+        "correct": 11,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-07|3": {
+        "attempted": 6,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-09|8": {
+        "attempted": 21,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-09|10": {
+        "attempted": 21,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-10|7": {
+        "attempted": 19,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-10|1": {
+        "attempted": 12,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-11|7": {
+        "attempted": 2,
+        "correct": 0,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-11|1": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-11|4": {
+        "attempted": 9,
+        "correct": 6,
+        "guesses": 2,
+        "correctGuesses": 2
+      },
+      "2026-09-12|3": {
+        "attempted": 18,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-13|9": {
+        "attempted": 22,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-14|9": {
+        "attempted": 21,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-14|2": {
+        "attempted": 26,
+        "correct": 22,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-15|4": {
+        "attempted": 19,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-15|6": {
+        "attempted": 16,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-15|2": {
+        "attempted": 15,
+        "correct": 15,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-15|5": {
+        "attempted": 26,
+        "correct": 23,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-09-16|10": {
+        "attempted": 15,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-16|8": {
+        "attempted": 15,
+        "correct": 13,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-16|5": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-16|3": {
+        "attempted": 25,
+        "correct": 22,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-16|6": {
+        "attempted": 25,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-17|6": {
+        "attempted": 6,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-17|3": {
+        "attempted": 7,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-17|8": {
+        "attempted": 32,
+        "correct": 26,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-18|8": {
+        "attempted": 20,
+        "correct": 13,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-18|10": {
+        "attempted": 15,
+        "correct": 10,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-19|1": {
+        "attempted": 25,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-19|2": {
+        "attempted": 11,
+        "correct": 11,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-19|3": {
+        "attempted": 6,
+        "correct": 5,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-19|4": {
+        "attempted": 10,
+        "correct": 7,
+        "guesses": 3,
+        "correctGuesses": 2
+      },
+      "2026-09-19|5": {
+        "attempted": 4,
+        "correct": 3,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-20|9": {
+        "attempted": 11,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-20|10": {
+        "attempted": 30,
+        "correct": 27,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-21|1": {
+        "attempted": 37,
+        "correct": 27,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-21|2": {
+        "attempted": 25,
+        "correct": 22,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-22|5": {
+        "attempted": 8,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-22|7": {
+        "attempted": 26,
+        "correct": 24,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-22|1": {
+        "attempted": 11,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-23|7": {
+        "attempted": 11,
+        "correct": 10,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-23|4": {
+        "attempted": 12,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-23|9": {
+        "attempted": 14,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-24|2": {
+        "attempted": 12,
+        "correct": 11,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-25|2": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-25|3": {
+        "attempted": 31,
+        "correct": 24,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-26|4": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-26|7": {
+        "attempted": 20,
+        "correct": 15,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-09-26|3": {
+        "attempted": 10,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-28|1": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-29|6": {
+        "attempted": 20,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-29|10": {
+        "attempted": 15,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-29|8": {
+        "attempted": 25,
+        "correct": 21,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-30|7": {
+        "attempted": 23,
+        "correct": 22,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-30|1": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-30|6": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-30|3": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-09-30|4": {
+        "attempted": 6,
+        "correct": 3,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-02|4": {
+        "attempted": 20,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-02|9": {
+        "attempted": 20,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-02|2": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-03|3": {
+        "attempted": 15,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-04|3": {
+        "attempted": 21,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-05|5": {
+        "attempted": 23,
+        "correct": 22,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-05|6": {
+        "attempted": 23,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-06|10": {
+        "attempted": 55,
+        "correct": 47,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-06|2": {
+        "attempted": 11,
+        "correct": 11,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-06|3": {
+        "attempted": 5,
+        "correct": 4,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-06|8": {
+        "attempted": 38,
+        "correct": 35,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-07|1": {
+        "attempted": 21,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-07|7": {
+        "attempted": 20,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-08|7": {
+        "attempted": 25,
+        "correct": 20,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-09|10": {
+        "attempted": 21,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-09|2": {
+        "attempted": 11,
+        "correct": 10,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-09|4": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-10|1": {
+        "attempted": 20,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-10|10": {
+        "attempted": 20,
+        "correct": 13,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-10|6": {
+        "attempted": 21,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-10|9": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-11|1": {
+        "attempted": 15,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-12|7": {
+        "attempted": 7,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-12|4": {
+        "attempted": 10,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-13|9": {
+        "attempted": 25,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-14|2": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-14|3": {
+        "attempted": 10,
+        "correct": 5,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-15|5": {
+        "attempted": 20,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-15|6": {
+        "attempted": 20,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-16|2": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-17|7": {
+        "attempted": 32,
+        "correct": 23,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-17|9": {
+        "attempted": 30,
+        "correct": 26,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-17|3": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-17|10": {
+        "attempted": 10,
+        "correct": 7,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-18|1": {
+        "attempted": 30,
+        "correct": 21,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-19|8": {
+        "attempted": 30,
+        "correct": 22,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-20|8": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-20|5": {
+        "attempted": 25,
+        "correct": 20,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-20|4": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-20|10": {
+        "attempted": 20,
+        "correct": 19,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-10-20|1": {
+        "attempted": 20,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-21|1": {
+        "attempted": 33,
+        "correct": 26,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-21|7": {
+        "attempted": 14,
+        "correct": 12,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-22|4": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-22|9": {
+        "attempted": 30,
+        "correct": 25,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-23|2": {
+        "attempted": 15,
+        "correct": 15,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-23|3": {
+        "attempted": 21,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-24|1": {
+        "attempted": 15,
+        "correct": 12,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-24|4": {
+        "attempted": 11,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-24|9": {
+        "attempted": 15,
+        "correct": 12,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-24|3": {
+        "attempted": 15,
+        "correct": 11,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-24|6": {
+        "attempted": 11,
+        "correct": 10,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-24|2": {
+        "attempted": 10,
+        "correct": 5,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-25|1": {
+        "attempted": 16,
+        "correct": 16,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-10-26|6": {
+        "attempted": 20,
+        "correct": 19,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-10-26|5": {
+        "attempted": 20,
+        "correct": 14,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-10-27|8": {
+        "attempted": 21,
+        "correct": 18,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-27|10": {
+        "attempted": 20,
+        "correct": 18,
+        "guesses": 2,
+        "correctGuesses": 2
+      },
+      "2026-10-28|1": {
+        "attempted": 22,
+        "correct": 17,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-28|7": {
+        "attempted": 20,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-29|9": {
+        "attempted": 10,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-30|4": {
+        "attempted": 20,
+        "correct": 16,
+        "guesses": 2,
+        "correctGuesses": 2
+      },
+      "2026-10-30|3": {
+        "attempted": 20,
+        "correct": 17,
+        "guesses": 2,
+        "correctGuesses": 2
+      },
+      "2026-10-31|2": {
+        "attempted": 10,
+        "correct": 8,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-10-31|7": {
+        "attempted": 40,
+        "correct": 35,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-01|8": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-01|9": {
+        "attempted": 10,
+        "correct": 9,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-03|4": {
+        "attempted": 21,
+        "correct": 18,
+        "guesses": 1,
+        "correctGuesses": 1
+      },
+      "2026-11-03|6": {
+        "attempted": 26,
+        "correct": 21,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-04|8": {
+        "attempted": 20,
+        "correct": 14,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-04|10": {
+        "attempted": 40,
+        "correct": 31,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-06|1": {
+        "attempted": 10,
+        "correct": 6,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-06|7": {
+        "attempted": 20,
+        "correct": 19,
+        "guesses": 0,
+        "correctGuesses": 0
+      },
+      "2026-11-06|4": {
+        "attempted": 20,
+        "correct": 16,
+        "guesses": 0,
+        "correctGuesses": 0
+      }
+    },
+    "hoursByDate": {
+      "2026-08-17": {
+        "hours": 2
+      },
+      "2026-08-18": {
+        "hours": 2
+      },
+      "2026-08-19": {
+        "hours": 5.623
+      },
+      "2026-08-21": {
+        "hours": 4
+      },
+      "2026-08-22": {
+        "hours": 2.5
+      },
+      "2026-08-23": {
+        "hours": 2.3
+      },
+      "2026-08-25": {
+        "hours": 6.9
+      },
+      "2026-08-26": {
+        "hours": 4
+      },
+      "2026-08-28": {
+        "hours": 2.5
+      },
+      "2026-08-31": {
+        "hours": 3
+      },
+      "2026-09-01": {
+        "hours": 2.5
+      },
+      "2026-09-02": {
+        "hours": 5.5
+      },
+      "2026-09-03": {
+        "hours": 2
+      },
+      "2026-09-04": {
+        "hours": 2.4
+      },
+      "2026-09-05": {
+        "hours": 2.5
+      },
+      "2026-09-06": {
+        "hours": 3.5
+      },
+      "2026-09-08": {
+        "hours": 2
+      },
+      "2026-09-09": {
+        "hours": 1.7
+      },
+      "2026-09-10": {
+        "hours": 3
+      },
+      "2026-09-11": {
+        "hours": 2
+      },
+      "2026-09-12": {
+        "hours": 2
+      },
+      "2026-09-13": {
+        "hours": 2
+      },
+      "2026-09-14": {
+        "hours": 2.7
+      },
+      "2026-09-16": {
+        "hours": 4.8
+      },
+      "2026-09-17": {
+        "hours": 5
+      },
+      "2026-09-18": {
+        "hours": 1
+      },
+      "2026-09-19": {
+        "hours": 2.5
+      },
+      "2026-09-20": {
+        "hours": 3
+      },
+      "2026-09-21": {
+        "hours": 1
+      },
+      "2026-09-22": {
+        "hours": 2.5
+      },
+      "2026-09-23": {
+        "hours": 6
+      },
+      "2026-09-24": {
+        "hours": 2.5
+      },
+      "2026-09-25": {
+        "hours": 3.33
+      },
+      "2026-09-26": {
+        "hours": 1.8
+      },
+      "2026-09-28": {
+        "hours": 2.7
+      },
+      "2026-09-30": {
+        "hours": 4.5
+      },
+      "2026-10-02": {
+        "hours": 1.6
+      },
+      "2026-10-01": {
+        "hours": 1.5
+      },
+      "2026-10-04": {
+        "hours": 1.6
+      },
+      "2026-10-07": {
+        "hours": 2
+      },
+      "2026-10-06": {
+        "hours": 2
+      },
+      "2026-10-05": {
+        "hours": 2
+      },
+      "2026-10-08": {
+        "hours": 1.5
+      },
+      "2026-10-10": {
+        "hours": 1.5
+      },
+      "2026-10-11": {
+        "hours": 1.5
+      },
+      "2026-10-22": {
+        "hours": 4
+      },
+      "2026-10-24": {
+        "hours": 1.5
+      },
+      "2026-10-23": {
+        "hours": 3
+      },
+      "2026-10-26": {
+        "hours": 2
+      },
+      "2026-10-25": {
+        "hours": 2
+      },
+      "2026-10-29": {
+        "hours": 2
+      }
+    },
+    "topicsByDateDiscipline": {
+      "2026-08-25|10": {
         "records": 1
       },
-      "2026-08-18|2": {
+      "2026-08-25|1": {
+        "records": 1
+      },
+      "2026-08-25|7": {
+        "records": 1
+      },
+      "2026-08-26|7": {
+        "records": 1
+      },
+      "2026-08-26|4": {
+        "records": 1
+      },
+      "2026-08-27|9": {
+        "records": 1
+      },
+      "2026-08-28|2": {
+        "records": 1
+      },
+      "2026-08-31|3": {
+        "records": 1
+      },
+      "2026-08-31|6": {
+        "records": 1
+      },
+      "2026-09-01|8": {
+        "records": 1
+      },
+      "2026-09-02|1": {
+        "records": 1
+      },
+      "2026-09-02|10": {
+        "records": 1
+      },
+      "2026-09-06|2": {
+        "records": 1
+      },
+      "2026-09-06|3": {
+        "records": 1
+      },
+      "2026-09-08|6": {
+        "records": 1
+      },
+      "2026-09-09|8": {
+        "records": 1
+      },
+      "2026-09-09|10": {
+        "records": 1
+      },
+      "2026-09-11|4": {
+        "records": 1
+      },
+      "2026-09-12|3": {
+        "records": 1
+      },
+      "2026-09-13|9": {
+        "records": 1
+      },
+      "2026-09-14|2": {
+        "records": 1
+      },
+      "2026-09-15|5": {
+        "records": 1
+      },
+      "2026-09-16|6": {
+        "records": 1
+      },
+      "2026-09-17|8": {
+        "records": 1
+      },
+      "2026-09-21|1": {
+        "records": 2
+      },
+      "2026-09-22|7": {
+        "records": 1
+      },
+      "2026-09-23|9": {
+        "records": 1
+      },
+      "2026-09-23|4": {
+        "records": 1
+      },
+      "2026-09-24|2": {
+        "records": 1
+      },
+      "2026-09-25|3": {
+        "records": 1
+      },
+      "2026-09-28|6": {
+        "records": 1
+      },
+      "2026-09-28|5": {
+        "records": 1
+      },
+      "2026-09-29|8": {
+        "records": 1
+      },
+      "2026-09-29|10": {
+        "records": 1
+      },
+      "2026-09-30|1": {
+        "records": 1
+      },
+      "2026-09-30|7": {
+        "records": 1
+      },
+      "2026-10-01|4": {
+        "records": 1
+      },
+      "2026-10-01|9": {
+        "records": 1
+      },
+      "2026-10-02|2": {
+        "records": 1
+      },
+      "2026-10-06|10": {
+        "records": 1
+      },
+      "2026-10-06|8": {
+        "records": 1
+      },
+      "2026-10-07|1": {
+        "records": 1
+      },
+      "2026-10-04|6": {
+        "records": 1
+      },
+      "2026-10-05|9": {
+        "records": 1
+      },
+      "2026-10-11|1": {
+        "records": 1
+      },
+      "2026-10-12|7": {
+        "records": 1
+      },
+      "2026-10-12|4": {
+        "records": 1
+      },
+      "2026-10-13|9": {
+        "records": 1
+      },
+      "2026-10-14|2": {
+        "records": 1
+      },
+      "2026-10-14|3": {
+        "records": 1
+      },
+      "2026-10-19|8": {
+        "records": 1
+      },
+      "2026-10-16|6": {
+        "records": 1
+      },
+      "2026-10-15|5": {
+        "records": 1
+      },
+      "2026-10-20|10": {
+        "records": 1
+      },
+      "2026-10-21|1": {
+        "records": 1
+      },
+      "2026-10-21|7": {
+        "records": 1
+      },
+      "2026-10-23|2": {
+        "records": 1
+      },
+      "2026-10-23|3": {
+        "records": 1
+      },
+      "2026-10-23|4": {
+        "records": 1
+      },
+      "2026-10-22|1": {
+        "records": 1
+      },
+      "2026-10-27|8": {
+        "records": 1
+      },
+      "2026-10-27|10": {
+        "records": 1
+      },
+      "2026-10-26|6": {
+        "records": 1
+      },
+      "2026-10-26|5": {
+        "records": 1
+      },
+      "2026-10-29|4": {
+        "records": 1
+      },
+      "2026-10-29|9": {
+        "records": 1
+      },
+      "2026-10-28|1": {
+        "records": 1
+      },
+      "2026-10-28|7": {
+        "records": 1
+      },
+      "2026-10-31|3": {
+        "records": 1
+      },
+      "2026-10-31|2": {
         "records": 1
       }
     }
   },
   "checksums": {
     "disciplines": "1f325bd638f0e29212c4ade61f203580f2232e1cf2edf53a25d56e1899da757e",
-    "questionSessions": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
-    "disciplineNotes": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
-    "studyHours": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
-    "studiedTopics": "a0d0412be0ddbcc81483f6bdb91aca669d773375a04d8bd7a957f8fef7a4698b",
-    "studyCycleEntries": "c2e0d1203fa3ee0b86fcf75622624d53551e54fddee59bb69e3fd66b02d4b1c4"
+    "questionSessions": "31b476c190daa99641b078e517cba30767bb95b7677290010df69aa33c17e1fa",
+    "disciplineNotes": "14016b0356208ff985227b853b8cf3564508becac3bd9fb259172539500159b1",
+    "studyHours": "463ad1414aa090f6a67e0874266db5a51af35d204f050feb3f5a3c86a819e58b",
+    "studiedTopics": "66f3e0483a43ffb8d2d6d4b55b6bc4705003bc9825cdd2f55e93277ece177fbc",
+    "studyCycleEntries": "a8321162050bc8636d51c3203d9c9caa635f55c2ab38078274bca543c4c278c6"
   },
   "idempotency": {
     "strategy": "preserve source integer IDs where available; upsert catalog by discipline ID; upsert owner by configured provider identity",

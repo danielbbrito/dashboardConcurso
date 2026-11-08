@@ -80,7 +80,7 @@ async function main(): Promise<void> {
       difficulty: registrationColumns.has("dificuldade") ? sourceDifficulty(row.dificuldade) : "medio",
       topic: registrationColumns.has("materia") ? row.materia ?? null : null,
       subtopic: registrationColumns.has("submateria") ? row.submateria ?? null : null,
-    }, { today: validationDate });
+    }, { today: validationDate, allowLegacyTextLength: true });
     if (!disciplineIds.has(disciplineId) || !result.success) throw new Error(`Invalid registros row ${String(row.id)}`);
     const mapped = result.data;
     statements.push(batchStatement(
@@ -89,7 +89,7 @@ async function main(): Promise<void> {
     ));
   }
   for (const row of hours) {
-    const result = validateStudyHours({ studyDate: row.data, hours: Number(row.horas) }, { today: validationDate });
+    const result = validateStudyHours({ studyDate: row.data, hours: Number(row.horas) }, { today: validationDate, allowLegacyPrecision: true });
     if (!result.success) throw new Error(`Invalid horas_estudo row ${String(row.id)}`);
     statements.push(batchStatement(
       "INSERT INTO study_hours (id, user_id, study_date, hours) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET user_id = excluded.user_id, study_date = excluded.study_date, hours = excluded.hours",
@@ -112,6 +112,7 @@ async function main(): Promise<void> {
       [userId, Number(row.disciplina_id), String(row.texto ?? ""), row.atualizado_em ? String(row.atualizado_em) : null],
     ));
   }
+  statements.push(batchStatement("DELETE FROM study_cycle_entries WHERE user_id = ?", [userId]));
   for (const row of cycle) {
     if (!disciplineIds.has(Number(row.disciplina_id))) throw new Error(`Invalid ciclo_estudos row ${String(row.id)}`);
     statements.push(batchStatement(

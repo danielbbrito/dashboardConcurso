@@ -105,7 +105,7 @@ async function buildReport(source: string, ownerEmail: string, validationDate: D
         topic: registrationColumns.has("materia") ? row.materia ?? null : null,
         subtopic: registrationColumns.has("submateria") ? row.submateria ?? null : null,
       },
-      { today: validationDate },
+      { today: validationDate, allowLegacyTextLength: true },
     );
     if (!knownDisciplines.has(disciplineId)) {
       pushInvalid(invalidRows, "registros", row.id, "discipline_id does not exist in disciplinas");
@@ -135,7 +135,7 @@ async function buildReport(source: string, ownerEmail: string, validationDate: D
   }
 
   for (const row of sourceRows.horas_estudo) {
-    const result = validateStudyHours({ studyDate: row.data, hours: Number(row.horas) }, { today: validationDate });
+    const result = validateStudyHours({ studyDate: row.data, hours: Number(row.horas) }, { today: validationDate, allowLegacyPrecision: true });
     if (!result.success) pushInvalid(invalidRows, "horas_estudo", row.id, result.error.error.message);
     else {
       hoursRows.push({ sourceId: row.id, studyDate: result.data.studyDate, hours: result.data.hours });

@@ -75,6 +75,22 @@ test("validates hours, topics, and future dates", () => {
   );
 });
 
+test("preserves legacy text length and hour precision during migration", () => {
+  const longTopic = "x".repeat(201);
+  assert.equal(validateQuestionSession({
+    studyDate: "2026-08-10",
+    disciplineId: 1,
+    questionsAttempted: 10,
+    correctAnswers: 8,
+    guesses: 1,
+    correctGuesses: 1,
+    difficulty: "medio",
+    topic: longTopic,
+    subtopic: null,
+  }, { today: toDateOnly("2026-08-10"), allowLegacyTextLength: true }).success, true);
+  assert.equal(validateStudyHours({ studyDate: "2026-08-10", hours: 3.383 }, { today: toDateOnly("2026-08-10"), allowLegacyPrecision: true }).success, true);
+});
+
 test("validates filter ranges and normalizes page size bounds", () => {
   const invalid = validateFilters({
     period: "custom",

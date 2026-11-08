@@ -71,15 +71,15 @@ function isFutureDate(value: DateOnly, today: DateOnly): boolean {
   return value > today;
 }
 
-function textOrNull(value: unknown, field: string, fields: ApiFieldErrors): string | null {
+function textOrNull(value: unknown, field: string, fields: ApiFieldErrors, maxLength = MAX_TEXT_LENGTH): string | null {
   if (value === null || value === undefined || value === "") return null;
   if (typeof value !== "string") {
     fields[field] = "Informe um texto valido.";
     return null;
   }
   const text = value.trim();
-  if (text.length > MAX_TEXT_LENGTH) {
-    fields[field] = `Use no maximo ${MAX_TEXT_LENGTH} caracteres.`;
+  if (text.length > maxLength) {
+    fields[field] = `Use no maximo ${maxLength} caracteres.`;
   }
   return text || null;
 }
@@ -94,7 +94,7 @@ function disciplineIdOrError(value: unknown, field: string, fields: ApiFieldErro
 
 export function validateQuestionSession(
   value: unknown,
-  options: { today?: DateOnly } = {},
+  options: { today?: DateOnly; allowLegacyTextLength?: boolean } = {},
 ): ValidationResult<QuestionSessionInput> {
   const input = objectValue(value);
   const fields: ApiFieldErrors = {};
@@ -129,8 +129,9 @@ export function validateQuestionSession(
 
   const difficulty = input.difficulty;
   if (!isDifficulty(difficulty)) fields.difficulty = `Escolha uma dificuldade: ${DIFFICULTIES.join(", ")}.`;
-  const topic = textOrNull(input.topic, "topic", fields);
-  const subtopic = textOrNull(input.subtopic, "subtopic", fields);
+  const maxTextLength = options.allowLegacyTextLength ? Number.POSITIVE_INFINITY : MAX_TEXT_LENGTH;
+  const topic = textOrNull(input.topic, "topic", fields, maxTextLength);
+  const subtopic = textOrNull(input.subtopic, "subtopic", fields, maxTextLength);
   if (!topic && subtopic) fields.subtopic = "Selecione uma materia antes do subtopico.";
   if (Object.keys(fields).length > 0 || disciplineId === null || !isDateOnly(studyDate) || !isDifficulty(difficulty)) {
     return invalid(fields);
@@ -160,7 +161,7 @@ export function validateQuestionSession(
 
 export function validateStudyHours(
   value: unknown,
-  options: { today?: DateOnly } = {},
+  options: { today?: DateOnly; allowLegacyPrecision?: boolean } = {},
 ): ValidationResult<StudyHoursInput> {
   const input = objectValue(value);
   const fields: ApiFieldErrors = {};
@@ -172,7 +173,7 @@ export function validateStudyHours(
   else {
     if (input.hours <= 0 || input.hours > MAX_HOURS) fields.hours = "Informe um valor entre 0 e 24 horas.";
     const decimalPlaces = String(input.hours).split(".")[1]?.length ?? 0;
-    if (decimalPlaces > MAX_HOURS_DECIMAL_PLACES) fields.hours = "Use no maximo duas casas decimais.";
+    if (!options.allowLegacyPrecision && decimalPlaces > MAX_HOURS_DECIMAL_PLACES) fields.hours = "Use no maximo duas casas decimais.";
   }
   if (Object.keys(fields).length > 0 || !isDateOnly(input.studyDate) || !isFiniteNumber(input.hours)) {
     return invalid(fields);
