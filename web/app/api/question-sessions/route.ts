@@ -19,8 +19,8 @@ export async function GET(request: Request) {
     const userId = await ensureApplicationUser(authorization.user);
     const result = await listQuestionSessions(userId, { from: filters.from, to: filters.to, disciplineIds: filters.disciplineIds }, Number(url.searchParams.get("page") ?? 1), Number(url.searchParams.get("pageSize") ?? 25));
     return apiSuccess(result);
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     invalidateUserTag(CACHE_TAGS.disciplineAnalytics, userId);
     invalidateUserTag(CACHE_TAGS.topics, userId);
     return apiSuccess(result.data, { status: 201 });
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

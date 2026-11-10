@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const userId = await ensureApplicationUser(authorization.user);
     const rows = await listQuestionMetricRows(userId, { to: toDateOnly(to), disciplineIds });
     return apiSuccess(compareAccumulated(rows, toDateOnly(from), toDateOnly(to)));
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

@@ -148,6 +148,7 @@ export async function recordQuestionSession(_userId: UserId, input: QuestionSess
     difficulty: difficultyToLegacy[input.difficulty],
     topic: input.topic,
     subtopic: input.subtopic,
+    createdAt: sql`datetime('now')`,
   }).returning();
   if (!row) throw new Error("Question session insert did not return a row");
   return mapQuestion(row, _userId);
@@ -240,7 +241,7 @@ export async function upsertDisciplineNote(userId: UserId, disciplineId: Discipl
 }
 
 export async function recordStudyHours(userId: UserId, input: StudyHoursInput): Promise<StudyHours> {
-  const [row] = await db.insert(studyHours).values({ studyDate: input.studyDate, hours: input.hours }).returning();
+  const [row] = await db.insert(studyHours).values({ studyDate: input.studyDate, hours: input.hours, createdAt: sql`datetime('now')` }).returning();
   if (!row) throw new Error("Study hours insert did not return a row");
   return { id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), hours: row.hours, createdAt: row.createdAt ?? "" };
 }
@@ -265,7 +266,7 @@ export async function aggregateStudyHoursByDate(userId: UserId, filters: DateRan
 }
 
 export async function recordStudiedTopic(userId: UserId, input: StudiedTopicInput): Promise<StudiedTopic> {
-  const [row] = await db.insert(studiedTopics).values({ studyDate: input.studyDate, disciplineId: input.disciplineId, topic: input.topic, subtopic: input.subtopic }).returning();
+  const [row] = await db.insert(studiedTopics).values({ studyDate: input.studyDate, disciplineId: input.disciplineId, topic: input.topic, subtopic: input.subtopic, createdAt: sql`datetime('now')` }).returning();
   if (!row) throw new Error("Studied topic insert did not return a row");
   return { id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), disciplineId: row.disciplineId as DisciplineId, topic: row.topic, subtopic: row.subtopic, createdAt: row.createdAt ?? "" };
 }

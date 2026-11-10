@@ -16,7 +16,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     invalidateUserTag(CACHE_TAGS.topics, userId);
     invalidateUserTag(CACHE_TAGS.reviews, userId);
     return apiSuccess({ deleted: true });
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

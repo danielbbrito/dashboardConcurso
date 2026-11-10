@@ -8,7 +8,7 @@ export async function GET() {
     if (authorization.status === "unauthenticated") return apiError("UNAUTHENTICATED", "É necessário entrar para continuar.", 401);
     if (authorization.status === "unauthorized") return apiError("UNAUTHORIZED", "Esta conta não está autorizada.", 403);
     return apiSuccess({ items: await listDisciplines() });
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

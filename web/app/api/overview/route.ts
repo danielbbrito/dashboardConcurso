@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       listQuestionMetricRows(userId, repositoryFilters),
     ]);
     return apiSuccess({ filters, kpis, series: { daily: dailySeries(rows), weekly: weeklySeries(rows) } });
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

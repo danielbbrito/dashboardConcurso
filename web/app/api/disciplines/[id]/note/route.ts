@@ -23,8 +23,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (value.authorization.status === "unauthorized") return apiError("UNAUTHORIZED", "Esta conta não está autorizada.", 403);
     if (!value.discipline) return apiError("NOT_FOUND", "Disciplina não encontrada.", 404);
     return apiSuccess(await getDisciplineNote(value.userId, value.disciplineId));
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }
 
@@ -40,7 +40,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const note = await upsertDisciplineNote(value.userId, value.disciplineId, body.body);
     invalidateUserTag(CACHE_TAGS.disciplineAnalytics, value.userId);
     return apiSuccess(note);
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

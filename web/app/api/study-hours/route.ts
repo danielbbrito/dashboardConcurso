@@ -17,8 +17,8 @@ export async function GET(request: Request) {
     const filters = parseFilters(url.searchParams, todayDateOnly(getServerEnv().timezone));
     const userId = await ensureApplicationUser(authorization.user);
     return apiSuccess(await listStudyHours(userId, { from: filters.from, to: filters.to }, Number(url.searchParams.get("page") ?? 1), Number(url.searchParams.get("pageSize") ?? 25)));
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     invalidateUserTag(CACHE_TAGS.hours, userId);
     invalidateUserTag(CACHE_TAGS.overview, userId);
     return apiSuccess(result.data, { status: 201 });
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

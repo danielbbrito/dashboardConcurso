@@ -16,6 +16,10 @@ export function apiSuccess<T>(data: T, init?: ResponseInit): NextResponse<{ data
 }
 
 export function apiServerError(error?: unknown): NextResponse<ApiError> {
-  if (error instanceof Error) console.error(JSON.stringify({ event: "api.server_error", error: error.name }));
+  if (error instanceof Error) {
+    const cause = "cause" in error ? error.cause : undefined;
+    const code = typeof cause === "object" && cause !== null && "code" in cause && typeof cause.code === "string" ? cause.code : undefined;
+    console.error(JSON.stringify({ event: "api.server_error", error: error.name, code }));
+  }
   return apiError("SERVER_ERROR", "Não foi possível concluir a consulta.", 500);
 }

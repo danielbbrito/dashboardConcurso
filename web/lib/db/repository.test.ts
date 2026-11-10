@@ -14,11 +14,11 @@ test("repositories scope user data and keep cycle mutations atomic", async () =>
   const migrationClient = createClient({ url: `file:${databasePath}` });
   await migrationClient.batch([
     "CREATE TABLE disciplinas (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, bloco TEXT NOT NULL, itens_prova INTEGER NOT NULL, ordem INTEGER NOT NULL)",
-    "CREATE TABLE registros (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, feitas INTEGER NOT NULL, acertos INTEGER NOT NULL, chutes INTEGER NOT NULL, chutes_certos INTEGER NOT NULL, criado_em TEXT, dificuldade TEXT, materia TEXT, submateria TEXT)",
-    "CREATE TABLE anotacoes (disciplina_id INTEGER PRIMARY KEY, texto TEXT NOT NULL, atualizado_em TEXT)",
-    "CREATE TABLE horas_estudo (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, horas REAL NOT NULL, criado_em TEXT)",
-    "CREATE TABLE materias (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, materia TEXT NOT NULL, submateria TEXT, criado_em TEXT)",
-    "CREATE TABLE ciclo_estudos (id INTEGER PRIMARY KEY AUTOINCREMENT, posicao INTEGER NOT NULL, disciplina_id INTEGER NOT NULL, horas REAL NOT NULL)",
+    "CREATE TABLE registros (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, feitas INTEGER NOT NULL CHECK (feitas >= 1), acertos INTEGER NOT NULL CHECK (acertos BETWEEN 0 AND feitas), chutes INTEGER NOT NULL DEFAULT 0 CHECK (chutes BETWEEN 0 AND feitas), chutes_certos INTEGER NOT NULL DEFAULT 0 CHECK (chutes_certos BETWEEN 0 AND chutes), criado_em TEXT NOT NULL DEFAULT (datetime('now')), dificuldade TEXT, materia TEXT, submateria TEXT)",
+    "CREATE TABLE anotacoes (disciplina_id INTEGER PRIMARY KEY, texto TEXT NOT NULL DEFAULT '', atualizado_em TEXT NOT NULL DEFAULT (datetime('now')))",
+    "CREATE TABLE horas_estudo (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, horas REAL NOT NULL CHECK (horas > 0 AND horas <= 24), criado_em TEXT NOT NULL DEFAULT (datetime('now')))",
+    "CREATE TABLE materias (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, materia TEXT NOT NULL, submateria TEXT, criado_em TEXT NOT NULL DEFAULT (datetime('now')))",
+    "CREATE TABLE ciclo_estudos (id INTEGER PRIMARY KEY AUTOINCREMENT, posicao INTEGER NOT NULL UNIQUE, disciplina_id INTEGER NOT NULL UNIQUE, horas REAL NOT NULL DEFAULT 1.0 CHECK (horas > 0))",
   ], "write");
 
   const repository = await import("./repository");

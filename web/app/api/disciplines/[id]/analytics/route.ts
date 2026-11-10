@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const filters = parseFilters(new URL(request.url).searchParams, todayDateOnly(getServerEnv().timezone));
     const result = await getDisciplineAnalytics(await ensureApplicationUser(authorization.user), id as DisciplineId, filters);
     return result ? apiSuccess(result) : apiError("NOT_FOUND", "Disciplina não encontrada.", 404);
-  } catch {
-    return apiServerError();
+  } catch (error) {
+    return apiServerError(error);
   }
 }

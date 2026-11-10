@@ -11,7 +11,7 @@ export async function GET() {
     if (authorization.status === "unauthenticated") return apiError("UNAUTHENTICATED", "É necessário entrar para continuar.", 401);
     if (authorization.status === "unauthorized") return apiError("UNAUTHORIZED", "Esta conta não está autorizada.", 403);
     return apiSuccess(await getInitializedCycle(await ensureApplicationUser(authorization.user)));
-  } catch { return apiServerError(); }
+  } catch (error) { return apiServerError(error); }
 }
 
 export async function PUT(request: Request) {
@@ -35,6 +35,6 @@ export async function PUT(request: Request) {
     return apiError("VALIDATION_ERROR", "Informe a ordem ou as horas do ciclo.", 422);
   } catch (error) {
     if (error instanceof Error && error.message.includes("ordem")) return apiError("VALIDATION_ERROR", error.message, 422);
-    return apiServerError();
+    return apiServerError(error);
   }
 }
