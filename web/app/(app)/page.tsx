@@ -13,14 +13,13 @@ import { RankingControls } from "@/components/ranking-controls";
 import { ComparisonSection } from "@/components/comparison-section";
 import { ResponsiveDataTable } from "@/components/responsive-data-table";
 
-function KpiCard({ label, value, definition }: { label: string; value: string; definition: string }) {
+function KpiCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="col-6 col-xl-3">
       <article className="card border-0 shadow-sm h-100">
         <div className="card-body">
           <p className="small text-secondary mb-2">{label}</p>
-          <p className="display-6 fw-semibold mb-2">{value}</p>
-          <p className="small text-secondary mb-0">{definition}</p>
+          <p className="display-6 fw-semibold mb-0">{value}</p>
         </div>
       </article>
     </div>
@@ -51,14 +50,14 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
       <FilterBar disciplines={disciplines} today={today} />
 
       <div className="row g-3 mb-4">
-        <KpiCard definition="Soma das sessões filtradas" label="Questões tentadas" value={formatNumber(overview.kpis.attempted)} />
-        <KpiCard definition="Respostas corretas" label="Acertos" value={formatNumber(overview.kpis.correct)} />
-        <KpiCard definition="Acertos menos chutes certos" label="Acertos sem chute" value={formatNumber(overview.kpis.correctWithoutGuess)} />
-        <KpiCard definition="Taxa entre todas as questões" label="Taxa de acerto" value={formatPercent(overview.kpis.accuracy)} />
-        <KpiCard definition="Taxa sem chute ÷ total" label="Taxa sem chute" value={formatPercent(overview.kpis.safeAccuracy)} />
-        <KpiCard definition="Taxa entre questões não chutadas" label="Taxa entre não chutadas" value={formatPercent(overview.kpis.nonGuessAccuracy)} />
-        <KpiCard definition="Chutes ÷ questões tentadas" label="Percentual de chutes" value={formatPercent(overview.kpis.guessPercentage)} />
-        <KpiCard definition="Acertos menos metade dos erros" label="Nota líquida Cebraspe" value={formatNumber(overview.kpis.netScore, 1)} />
+        <KpiCard label="Questões tentadas" value={formatNumber(overview.kpis.attempted)} />
+        <KpiCard label="Acertos" value={formatNumber(overview.kpis.correct)} />
+        <KpiCard label="Acertos sem chute" value={formatNumber(overview.kpis.correctWithoutGuess)} />
+        <KpiCard label="Percentual de chutes" value={formatPercent(overview.kpis.guessPercentage)} />
+        <KpiCard label="Taxa de acerto" value={formatPercent(overview.kpis.accuracy)} />
+        <KpiCard label="Taxa sem chute" value={formatPercent(overview.kpis.safeAccuracy)} />
+        <KpiCard label="Taxa de acerto (não chutadas)" value={formatPercent(overview.kpis.nonGuessAccuracy)} />
+        <KpiCard label="Nota líquida Cebraspe" value={formatNumber(overview.kpis.netScore, 1)} />
       </div>
 
       {!hasQuestions ? (
