@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 import { FeedbackAlert } from "@/components/query-states";
@@ -16,8 +16,9 @@ export function QuestionRecordingForm({ catalog, disciplines, today }: { catalog
   const [values, setValues] = useState({ studyDate: today, disciplineId: String(disciplines[0]?.id ?? ""), questionsAttempted: "", correctAnswers: "", guesses: "0", correctGuesses: "0", difficulty: "medio", topic: "", subtopic: "" });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState<{ accuracy: number | null; netScore: number } | null>(null);
-  const formRef = useKeepFormVisible(success !== null);
+  const [success, setSuccess] = useState<{ accuracy: number | null } | null>(null);
+  const [refreshing, startRefresh] = useTransition();
+  const formRef = useKeepFormVisible(success !== null && !refreshing);
   const topics = catalog[values.disciplineId] ?? [];
   const selectedTopic = topics.find(([topic]) => topic === values.topic);
   const subtopics = selectedTopic?.[1] ?? [];
@@ -35,13 +36,13 @@ export function QuestionRecordingForm({ catalog, disciplines, today }: { catalog
     setSuccess(null);
     try {
       const response = await fetch("/api/question-sessions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ studyDate: values.studyDate, disciplineId: Number(values.disciplineId), questionsAttempted: Number(values.questionsAttempted), correctAnswers: Number(values.correctAnswers), guesses: Number(values.guesses), correctGuesses: Number(values.correctGuesses), difficulty: values.difficulty, topic: values.topic || null, subtopic: values.subtopic || null }) });
-      const payload = await response.json() as { data?: { summary: { accuracy: number | null; netScore: number } }; error?: { message?: string; fields?: FieldErrors } };
+      const payload = await response.json() as { data?: { summary: { accuracy: number | null } }; error?: { message?: string; fields?: FieldErrors } };
       if (!response.ok || !payload.data) {
         setErrors(payload.error?.fields ?? { form: payload.error?.message ?? "Não foi possível salvar a sessão." });
         return;
       }
       setSuccess(payload.data.summary);
-      router.refresh();
+      startRefresh(() => router.refresh());
     } catch {
       setErrors({ form: "Não foi possível conectar ao servidor." });
     } finally {
@@ -57,7 +58,7 @@ export function QuestionRecordingForm({ catalog, disciplines, today }: { catalog
 
   return <form aria-describedby={errors.form ? "question-form-error" : undefined} onSubmit={submit} ref={formRef}>
     {errors.form ? <div className="alert alert-danger" id="question-form-error" role="alert">{errors.form}</div> : null}
-    {success ? <FeedbackAlert><strong>Sessão registrada.</strong> Taxa de acerto: {formatPercent(success.accuracy)}. Nota líquida: {success.netScore.toFixed(1)}.<div className="mt-2"><button className="btn btn-sm btn-success me-2" onClick={resetForm} type="button">Registrar outra</button><a className="btn btn-sm btn-outline-success" href="#historico">Ver histórico</a></div></FeedbackAlert> : null}
+    {success ? <FeedbackAlert><strong>Sessão registrada.</strong> Taxa de acerto: {formatPercent(success.accuracy)}.<div className="mt-2"><button className="btn btn-sm btn-success me-2" onClick={resetForm} type="button">Registrar outra</button><a className="btn btn-sm btn-outline-success" href="#historico">Ver histórico</a></div></FeedbackAlert> : null}
     <div className="row g-3">
       <Field error={errors.studyDate} label="Data" name="question-date"><input className="form-control" id="question-date" max={today} onChange={(event) => update("studyDate", event.target.value)} type="date" value={values.studyDate} /></Field>
       <Field error={errors.disciplineId} label="Disciplina" name="question-discipline"><select className="form-select" id="question-discipline" onChange={(event) => update("disciplineId", event.target.value)} value={values.disciplineId}>{disciplines.map((discipline) => <option key={discipline.id} value={discipline.id}>{discipline.name}</option>)}</select></Field>

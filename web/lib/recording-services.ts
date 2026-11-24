@@ -42,7 +42,7 @@ export async function saveQuestionSession(user: AuthorizedUser, value: unknown, 
     guesses: session.guesses,
     correctGuesses: session.correctGuesses,
   }]);
-  return { success: true as const, data: { session, summary: { accuracy: kpis.accuracy, netScore: kpis.netScore } } };
+  return { success: true as const, data: { session, summary: { accuracy: kpis.accuracy } } };
 }
 
 export async function saveStudyHours(user: AuthorizedUser, value: unknown, today: import("@/lib/domain").DateOnly) {

@@ -46,7 +46,6 @@ test("computes current KPI formulas and unavailable ratios", () => {
   assert.equal(values.attempted, 15);
   assert.equal(values.correct, 10);
   assert.equal(values.correctWithoutGuess, 9);
-  assert.equal(values.netScore, 7.5);
   assert.equal(values.nonGuessAccuracy, 9 / 12);
 
   const allGuesses = computeKpis([question("2026-08-01", D1, "A", 10, 5, 10, 5)]);

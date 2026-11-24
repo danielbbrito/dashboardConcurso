@@ -26,8 +26,6 @@ export type Kpis = {
   nonGuessAccuracy: number | null;
   guessPercentage: number | null;
   correctGuessRate: number | null;
-  netScore: number;
-  netScorePercentage: number | null;
 };
 
 export type DailySeriesPoint = {
@@ -42,7 +40,6 @@ export type DailySeriesPoint = {
   correctGuessesAccumulated: number;
   accumulatedAccuracy: number;
   accumulatedSafeAccuracy: number;
-  accumulatedNetScore: number;
 };
 
 export type WeeklySeriesPoint = {
@@ -65,7 +62,6 @@ export type RankingRow = {
   correctGuesses: number;
   accuracy: number;
   safeAccuracy: number;
-  netScore: number;
 };
 
 export type ComparisonDisciplineRow = {
@@ -141,7 +137,6 @@ export function computeKpis(rows: MetricQuestion[]): Kpis {
   const correctGuesses = rows.reduce((sum, row) => sum + row.correctGuesses, 0);
   const errors = attempted - correct;
   const correctWithoutGuess = correct - correctGuesses;
-  const netScore = correct - 0.5 * errors;
 
   return {
     attempted,
@@ -156,8 +151,6 @@ export function computeKpis(rows: MetricQuestion[]): Kpis {
     nonGuessAccuracy: ratio(correctWithoutGuess, attempted - guesses),
     guessPercentage: ratio(guesses, attempted),
     correctGuessRate: ratio(correctGuesses, guesses),
-    netScore,
-    netScorePercentage: ratio(netScore, attempted),
   };
 }
 
@@ -183,8 +176,6 @@ export function dailySeries(rows: MetricQuestion[]): DailySeriesPoint[] {
       accumulatedAccuracy: accumulated.correct / accumulated.attempted,
       accumulatedSafeAccuracy:
         (accumulated.correct - accumulated.correctGuesses) / accumulated.attempted,
-      accumulatedNetScore:
-        accumulated.correct - 0.5 * (accumulated.attempted - accumulated.correct),
     };
   });
 }
@@ -228,7 +219,6 @@ export function rankDisciplines(
       correctGuesses: values.correctGuesses,
       accuracy: values.accuracy ?? 0,
       safeAccuracy: values.safeAccuracy ?? 0,
-      netScore: values.netScore,
     });
   }
 

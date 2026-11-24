@@ -57,7 +57,6 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
         <KpiCard label="Taxa de acerto" value={formatPercent(overview.kpis.accuracy)} />
         <KpiCard label="Taxa sem chute" value={formatPercent(overview.kpis.safeAccuracy)} />
         <KpiCard label="Taxa de acerto (não chutadas)" value={formatPercent(overview.kpis.nonGuessAccuracy)} />
-        <KpiCard label="Nota líquida Cebraspe" value={formatNumber(overview.kpis.netScore, 1)} />
       </div>
 
       {!hasQuestions ? (
