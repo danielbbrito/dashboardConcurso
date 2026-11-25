@@ -2,14 +2,17 @@
 
 import { useEffect, useRef } from "react";
 
-export function useKeepFormVisible(active: boolean) {
-  const formRef = useRef<HTMLFormElement>(null);
+export function useKeepFormVisible(refreshKey: string) {
+  const previousRefreshKey = useRef(refreshKey);
+  const waitingForRefresh = useRef(false);
 
   useEffect(() => {
-    if (!active) return;
+    if (previousRefreshKey.current === refreshKey) return;
+    previousRefreshKey.current = refreshKey;
+    if (!waitingForRefresh.current) return;
+    waitingForRefresh.current = false;
 
-    // A hash antiga (por exemplo, #historico) faz o navegador voltar à lista
-    // quando o conteúdo da página é atualizado.
+    // Clear any old history anchor before restoring the form's page position.
     if (window.location.hash) {
       const url = new URL(window.location.href);
       url.hash = "";
@@ -25,7 +28,9 @@ export function useKeepFormVisible(active: boolean) {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(timeout);
     };
-  }, [active]);
+  }, [refreshKey]);
 
-  return formRef;
+  return () => {
+    waitingForRefresh.current = true;
+  };
 }

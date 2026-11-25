@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 import { FeedbackAlert } from "@/components/query-states";
@@ -11,14 +11,13 @@ import type { DateOnly, Discipline } from "@/lib/domain";
 type TopicCatalog = Readonly<Record<string, readonly (readonly [string, readonly string[]])[]>>;
 type FieldErrors = Record<string, string>;
 
-export function QuestionRecordingForm({ catalog, disciplines, today }: { catalog: TopicCatalog; disciplines: Discipline[]; today: DateOnly }) {
+export function QuestionRecordingForm({ catalog, disciplines, historyKey, today }: { catalog: TopicCatalog; disciplines: Discipline[]; historyKey: string; today: DateOnly }) {
   const router = useRouter();
   const [values, setValues] = useState({ studyDate: today, disciplineId: String(disciplines[0]?.id ?? ""), questionsAttempted: "", correctAnswers: "", guesses: "0", correctGuesses: "0", difficulty: "medio", topic: "", subtopic: "" });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<{ accuracy: number | null } | null>(null);
-  const [refreshing, startRefresh] = useTransition();
-  const formRef = useKeepFormVisible(success !== null && !refreshing);
+  const waitForRefresh = useKeepFormVisible(historyKey);
   const topics = catalog[values.disciplineId] ?? [];
   const selectedTopic = topics.find(([topic]) => topic === values.topic);
   const subtopics = selectedTopic?.[1] ?? [];
@@ -42,7 +41,8 @@ export function QuestionRecordingForm({ catalog, disciplines, today }: { catalog
         return;
       }
       setSuccess(payload.data.summary);
-      startRefresh(() => router.refresh());
+      waitForRefresh();
+      router.refresh();
     } catch {
       setErrors({ form: "Não foi possível conectar ao servidor." });
     } finally {
@@ -56,7 +56,7 @@ export function QuestionRecordingForm({ catalog, disciplines, today }: { catalog
     setErrors({});
   }
 
-  return <form aria-describedby={errors.form ? "question-form-error" : undefined} onSubmit={submit} ref={formRef}>
+  return <form aria-describedby={errors.form ? "question-form-error" : undefined} onSubmit={submit}>
     {errors.form ? <div className="alert alert-danger" id="question-form-error" role="alert">{errors.form}</div> : null}
     {success ? <FeedbackAlert><strong>Sessão registrada.</strong> Taxa de acerto: {formatPercent(success.accuracy)}.<div className="mt-2"><button className="btn btn-sm btn-success me-2" onClick={resetForm} type="button">Registrar outra</button><a className="btn btn-sm btn-outline-success" href="#historico">Ver histórico</a></div></FeedbackAlert> : null}
     <div className="row g-3">

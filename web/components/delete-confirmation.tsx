@@ -10,6 +10,7 @@ type DeleteConfirmationProps = {
 export function DeleteConfirmation({ itemLabel, onConfirm }: DeleteConfirmationProps) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -44,9 +45,12 @@ export function DeleteConfirmation({ itemLabel, onConfirm }: DeleteConfirmationP
 
   async function confirm() {
     setPending(true);
+    setError(null);
     try {
       await onConfirm();
       setOpen(false);
+    } catch {
+      setError("Não foi possível excluir o registro. Tente novamente.");
     } finally {
       setPending(false);
     }
@@ -56,22 +60,27 @@ export function DeleteConfirmation({ itemLabel, onConfirm }: DeleteConfirmationP
     <>
       <button className="btn btn-sm btn-outline-danger" onClick={() => setOpen(true)} ref={triggerRef} type="button">Excluir</button>
       {open ? (
-        <div aria-labelledby="delete-dialog-title" aria-modal="true" className="modal d-block" role="dialog">
-          <button aria-label="Fechar confirmação" className="modal-backdrop border-0" onClick={() => setOpen(false)} type="button" />
-          <div className="modal-dialog modal-dialog-centered" ref={dialogRef}>
-            <div className="modal-content position-relative">
-              <div className="modal-header">
-                <h2 className="modal-title fs-5" id="delete-dialog-title">Confirmar exclusão</h2>
-                <button aria-label="Fechar confirmação" className="btn-close" onClick={() => setOpen(false)} type="button" />
-              </div>
-              <div className="modal-body"><p className="mb-0">Excluir {itemLabel}? Essa ação não pode ser desfeita.</p></div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" disabled={pending} onClick={() => setOpen(false)} ref={cancelRef} type="button">Cancelar</button>
-                <button className="btn btn-danger" disabled={pending} onClick={() => void confirm()} type="button">{pending ? "Excluindo..." : "Excluir"}</button>
+        <>
+          <button aria-label="Fechar confirmação" className="modal-backdrop show border-0" onClick={() => setOpen(false)} type="button" />
+          <div aria-labelledby="delete-dialog-title" aria-modal="true" className="modal d-block" role="dialog">
+            <div className="modal-dialog modal-dialog-centered" ref={dialogRef}>
+              <div className="modal-content position-relative">
+                <div className="modal-header">
+                  <h2 className="modal-title fs-5" id="delete-dialog-title">Confirmar exclusão</h2>
+                  <button aria-label="Fechar confirmação" className="btn-close" disabled={pending} onClick={() => setOpen(false)} type="button" />
+                </div>
+                <div className="modal-body">
+                  <p className="mb-0">Excluir {itemLabel}? Essa ação não pode ser desfeita.</p>
+                  {error ? <div className="alert alert-danger mt-3 mb-0" role="alert">{error}</div> : null}
+                </div>
+                <div className="modal-footer">
+                  <button className="btn btn-secondary" disabled={pending} onClick={() => setOpen(false)} ref={cancelRef} type="button">Cancelar</button>
+                  <button className="btn btn-danger" disabled={pending} onClick={() => void confirm()} type="button">{pending ? "Excluindo..." : "Excluir"}</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       ) : null}
     </>
   );

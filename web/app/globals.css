@@ -87,6 +87,10 @@ textarea {
   border: 1px dashed var(--app-border);
 }
 
+.keep-recording-form-visible {
+  overflow-anchor: none;
+}
+
 .responsive-data-table td[data-label] {
   min-width: 8rem;
 }
