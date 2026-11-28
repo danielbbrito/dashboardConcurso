@@ -10,6 +10,7 @@ import {
   validateQuestionSession,
   validateStudiedTopic,
   validateStudyHours,
+  MAX_COMMENT_LENGTH,
 } from "./index";
 import type { DisciplineId } from "./index";
 
@@ -28,10 +29,12 @@ test("validates question relationships and stable field errors", () => {
       difficulty: "medio",
       topic: null,
       subtopic: null,
+      comment: "  Funções e questões  ",
     },
     { today: toDateOnly("2026-08-10") },
   );
   assert.equal(valid.success, true);
+  if (valid.success) assert.equal(valid.data.comment, "Funções e questões");
 
   const invalid = validateQuestionSession(
     {
@@ -73,6 +76,7 @@ test("validates hours, topics, and future dates", () => {
     validateStudiedTopic({ studyDate: "2026-08-11", disciplineId: D1, topic: "Direito", subtopic: null }, { today: toDateOnly("2026-08-10") }).success,
     false,
   );
+  assert.equal(validateStudiedTopic({ studyDate: "2026-08-10", disciplineId: D1, topic: "Direito", subtopic: null, comment: "x".repeat(MAX_COMMENT_LENGTH + 1) }, { today: toDateOnly("2026-08-10") }).success, false);
 });
 
 test("preserves legacy text length and hour precision during migration", () => {

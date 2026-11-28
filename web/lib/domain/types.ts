@@ -29,6 +29,7 @@ export type QuestionSessionInput = {
   difficulty: Difficulty;
   topic: string | null;
   subtopic: string | null;
+  comment: string | null;
 };
 
 export type QuestionSession = QuestionSessionInput & {
@@ -60,6 +61,7 @@ export type StudiedTopicInput = {
   disciplineId: DisciplineId;
   topic: string;
   subtopic: string | null;
+  comment: string | null;
 };
 
 export type StudiedTopic = StudiedTopicInput & {

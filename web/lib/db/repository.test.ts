@@ -14,10 +14,10 @@ test("repositories scope user data and keep cycle mutations atomic", async () =>
   const migrationClient = createClient({ url: `file:${databasePath}` });
   await migrationClient.batch([
     "CREATE TABLE disciplinas (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, bloco TEXT NOT NULL, itens_prova INTEGER NOT NULL, ordem INTEGER NOT NULL)",
-    "CREATE TABLE registros (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, feitas INTEGER NOT NULL CHECK (feitas >= 1), acertos INTEGER NOT NULL CHECK (acertos BETWEEN 0 AND feitas), chutes INTEGER NOT NULL DEFAULT 0 CHECK (chutes BETWEEN 0 AND feitas), chutes_certos INTEGER NOT NULL DEFAULT 0 CHECK (chutes_certos BETWEEN 0 AND chutes), criado_em TEXT NOT NULL DEFAULT (datetime('now')), dificuldade TEXT, materia TEXT, submateria TEXT)",
+    "CREATE TABLE registros (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, feitas INTEGER NOT NULL CHECK (feitas >= 1), acertos INTEGER NOT NULL CHECK (acertos BETWEEN 0 AND feitas), chutes INTEGER NOT NULL DEFAULT 0 CHECK (chutes BETWEEN 0 AND feitas), chutes_certos INTEGER NOT NULL DEFAULT 0 CHECK (chutes_certos BETWEEN 0 AND chutes), criado_em TEXT NOT NULL DEFAULT (datetime('now')), dificuldade TEXT, materia TEXT, submateria TEXT, comentario TEXT)",
     "CREATE TABLE anotacoes (disciplina_id INTEGER PRIMARY KEY, texto TEXT NOT NULL DEFAULT '', atualizado_em TEXT NOT NULL DEFAULT (datetime('now')))",
     "CREATE TABLE horas_estudo (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, horas REAL NOT NULL CHECK (horas > 0 AND horas <= 24), criado_em TEXT NOT NULL DEFAULT (datetime('now')))",
-    "CREATE TABLE materias (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, materia TEXT NOT NULL, submateria TEXT, criado_em TEXT NOT NULL DEFAULT (datetime('now')))",
+    "CREATE TABLE materias (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT NOT NULL, disciplina_id INTEGER NOT NULL, materia TEXT NOT NULL, submateria TEXT, criado_em TEXT NOT NULL DEFAULT (datetime('now')), comentario TEXT)",
     "CREATE TABLE ciclo_estudos (id INTEGER PRIMARY KEY AUTOINCREMENT, posicao INTEGER NOT NULL UNIQUE, disciplina_id INTEGER NOT NULL UNIQUE, horas REAL NOT NULL DEFAULT 1.0 CHECK (horas > 0))",
   ], "write");
 
@@ -41,15 +41,34 @@ test("repositories scope user data and keep cycle mutations atomic", async () =>
     difficulty: "medio",
     topic: "Topico",
     subtopic: null,
+    comment: "Resumo inicial",
   });
   assert.equal((await repository.listQuestionSessions(userOne)).pageInfo.total, 1);
+  assert.equal((await repository.listQuestionSessions(userOne)).items[0]?.comment, "Resumo inicial");
+  const updatedSession = await repository.updateQuestionSession(session.id, userOne, {
+    studyDate: toDateOnly("2026-08-02"),
+    disciplineId: disciplineOne,
+    questionsAttempted: 12,
+    correctAnswers: 9,
+    guesses: 3,
+    correctGuesses: 2,
+    difficulty: "dificil",
+    topic: "Topico atualizado",
+    subtopic: null,
+    comment: "Revisei os itens 1 a 5",
+  });
+  assert.equal(updatedSession?.comment, "Revisei os itens 1 a 5");
+  assert.equal((await repository.listQuestionSessions(userOne)).items[0]?.questionsAttempted, 12);
   assert.equal((await repository.listQuestionSessions(userTwo)).pageInfo.total, 1);
   assert.equal(await repository.deleteQuestionSession(session.id, userTwo), true);
 
   await repository.recordStudyHours(userOne, { studyDate: toDateOnly("2026-08-01"), hours: 2 });
   assert.equal((await repository.listStudyHours(userTwo)).pageInfo.total, 1);
-  await repository.recordStudiedTopic(userOne, { studyDate: toDateOnly("2026-08-01"), disciplineId: disciplineOne, topic: "Topico", subtopic: null });
+  const studiedTopic = await repository.recordStudiedTopic(userOne, { studyDate: toDateOnly("2026-08-01"), disciplineId: disciplineOne, topic: "Topico", subtopic: null, comment: "Capítulo 2 e exercícios" });
   assert.equal((await repository.listStudiedTopics(userOne)).pageInfo.total, 1);
+  const updatedTopic = await repository.updateStudiedTopic(studiedTopic.id, userOne, { studyDate: toDateOnly("2026-08-03"), disciplineId: disciplineTwo, topic: "Topico corrigido", subtopic: "Parte A", comment: "Foco em exercícios" });
+  assert.equal(updatedTopic?.comment, "Foco em exercícios");
+  assert.equal((await repository.listStudiedTopics(userOne)).items[0]?.topic, "Topico corrigido");
   await repository.upsertDisciplineNote(userOne, disciplineOne, "Nota privada");
   assert.equal((await repository.getDisciplineNote(userTwo, disciplineOne))?.body, "Nota privada");
 

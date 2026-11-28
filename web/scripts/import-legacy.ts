@@ -1,6 +1,6 @@
 import { createClient, type InStatement } from "@libsql/client";
 import { execFile } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 
@@ -44,13 +44,19 @@ async function main(): Promise<void> {
   if (!ownerEmail) throw new Error("MIGRATION_OWNER_EMAIL or --owner-email is required");
   if (path.resolve(source) === path.resolve(targetUrl.replace(/^file:/, ""))) throw new Error("Source and target must be different");
 
-  const migrationSql = await readFile(path.resolve("migrations/0001_initial.sql"), "utf8");
+  const migrationDirectory = path.resolve("migrations");
+  const migrationFiles = (await readdir(migrationDirectory)).filter((file) => file.endsWith(".sql")).sort();
+  const migrations = await Promise.all(migrationFiles.map(async (file) => ({
+    id: file.replace(/\.sql$/, ""),
+    sql: await readFile(path.join(migrationDirectory, file), "utf8"),
+  })));
   const target = createClient({ url: targetUrl, authToken: process.env.DATABASE_AUTH_TOKEN ?? process.env.ESTUDOS_DB_TOKEN });
-  await runMigrations(target, [{ id: "0001_initial", sql: migrationSql }]);
+  await runMigrations(target, migrations);
 
   const disciplines = await sourceQuery(source, "SELECT id, nome, bloco, itens_prova, ordem FROM disciplinas ORDER BY id");
   const disciplineIds = new Set(disciplines.map((row) => Number(row.id)));
   const registrationColumns = new Set((await sourceQuery(source, 'PRAGMA table_info("registros")')).map((row) => String(row.name)));
+  const topicColumns = new Set((await sourceQuery(source, 'PRAGMA table_info("materias")')).map((row) => String(row.name)));
   const registrations = await sourceQuery(source, "SELECT * FROM registros ORDER BY id");
   const hours = await sourceQuery(source, "SELECT * FROM horas_estudo ORDER BY id");
   const topics = await sourceQuery(source, "SELECT * FROM materias ORDER BY id");
@@ -80,12 +86,13 @@ async function main(): Promise<void> {
       difficulty: registrationColumns.has("dificuldade") ? sourceDifficulty(row.dificuldade) : "medio",
       topic: registrationColumns.has("materia") ? row.materia ?? null : null,
       subtopic: registrationColumns.has("submateria") ? row.submateria ?? null : null,
+      comment: registrationColumns.has("comentario") ? row.comentario ?? null : null,
     }, { today: validationDate, allowLegacyTextLength: true });
     if (!disciplineIds.has(disciplineId) || !result.success) throw new Error(`Invalid registros row ${String(row.id)}`);
     const mapped = result.data;
     statements.push(batchStatement(
-      "INSERT INTO question_sessions (id, user_id, study_date, discipline_id, questions_attempted, correct_answers, guesses, correct_guesses, difficulty, topic, subtopic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET user_id = excluded.user_id, study_date = excluded.study_date, discipline_id = excluded.discipline_id, questions_attempted = excluded.questions_attempted, correct_answers = excluded.correct_answers, guesses = excluded.guesses, correct_guesses = excluded.correct_guesses, difficulty = excluded.difficulty, topic = excluded.topic, subtopic = excluded.subtopic",
-      [Number(row.id), userId, mapped.studyDate, mapped.disciplineId, mapped.questionsAttempted, mapped.correctAnswers, mapped.guesses, mapped.correctGuesses, mapped.difficulty, mapped.topic, mapped.subtopic],
+      "INSERT INTO question_sessions (id, user_id, study_date, discipline_id, questions_attempted, correct_answers, guesses, correct_guesses, difficulty, topic, subtopic, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET user_id = excluded.user_id, study_date = excluded.study_date, discipline_id = excluded.discipline_id, questions_attempted = excluded.questions_attempted, correct_answers = excluded.correct_answers, guesses = excluded.guesses, correct_guesses = excluded.correct_guesses, difficulty = excluded.difficulty, topic = excluded.topic, subtopic = excluded.subtopic, comment = excluded.comment",
+      [Number(row.id), userId, mapped.studyDate, mapped.disciplineId, mapped.questionsAttempted, mapped.correctAnswers, mapped.guesses, mapped.correctGuesses, mapped.difficulty, mapped.topic, mapped.subtopic, mapped.comment],
     ));
   }
   for (const row of hours) {
@@ -98,11 +105,11 @@ async function main(): Promise<void> {
   }
   for (const row of topics) {
     const disciplineId = Number(row.disciplina_id) as DisciplineId;
-    const result = validateStudiedTopic({ studyDate: row.data, disciplineId, topic: row.materia, subtopic: row.submateria ?? null }, { today: validationDate });
+    const result = validateStudiedTopic({ studyDate: row.data, disciplineId, topic: row.materia, subtopic: row.submateria ?? null, comment: topicColumns.has("comentario") ? row.comentario ?? null : null }, { today: validationDate });
     if (!disciplineIds.has(disciplineId) || !result.success) throw new Error(`Invalid materias row ${String(row.id)}`);
     statements.push(batchStatement(
-      "INSERT INTO studied_topics (id, user_id, study_date, discipline_id, topic, subtopic) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET user_id = excluded.user_id, study_date = excluded.study_date, discipline_id = excluded.discipline_id, topic = excluded.topic, subtopic = excluded.subtopic",
-      [Number(row.id), userId, result.data.studyDate, result.data.disciplineId, result.data.topic, result.data.subtopic],
+      "INSERT INTO studied_topics (id, user_id, study_date, discipline_id, topic, subtopic, comment) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET user_id = excluded.user_id, study_date = excluded.study_date, discipline_id = excluded.discipline_id, topic = excluded.topic, subtopic = excluded.subtopic, comment = excluded.comment",
+      [Number(row.id), userId, result.data.studyDate, result.data.disciplineId, result.data.topic, result.data.subtopic, result.data.comment],
     ));
   }
   for (const row of notes) {

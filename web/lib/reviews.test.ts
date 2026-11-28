@@ -12,8 +12,8 @@ test("uses Sunday-to-Saturday review weeks", () => {
 
 test("schedules every topic in the selected week on its Saturday", () => {
   const topics = [
-    { id: "1", userId: "u" as never, studyDate: toDateOnly("2026-08-02"), disciplineId: 1 as never, topic: "A", subtopic: null, createdAt: "" },
-    { id: "2", userId: "u" as never, studyDate: toDateOnly("2026-08-08"), disciplineId: 1 as never, topic: "B", subtopic: null, createdAt: "" },
+    { id: "1", userId: "u" as never, studyDate: toDateOnly("2026-08-02"), disciplineId: 1 as never, topic: "A", subtopic: null, comment: null, createdAt: "" },
+    { id: "2", userId: "u" as never, studyDate: toDateOnly("2026-08-08"), disciplineId: 1 as never, topic: "B", subtopic: null, comment: null, createdAt: "" },
   ];
   assert.deepEqual(scheduleReviews(topics, toDateOnly("2026-08-05")).map((topic) => topic.reviewDate), ["2026-08-08", "2026-08-08"]);
 });

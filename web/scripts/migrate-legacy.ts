@@ -104,6 +104,7 @@ async function buildReport(source: string, ownerEmail: string, validationDate: D
         difficulty,
         topic: registrationColumns.has("materia") ? row.materia ?? null : null,
         subtopic: registrationColumns.has("submateria") ? row.submateria ?? null : null,
+        comment: registrationColumns.has("comentario") ? row.comentario ?? null : null,
       },
       { today: validationDate, allowLegacyTextLength: true },
     );
@@ -124,6 +125,7 @@ async function buildReport(source: string, ownerEmail: string, validationDate: D
         difficulty: mapped.difficulty,
         topic: mapped.topic,
         subtopic: mapped.subtopic,
+        comment: mapped.comment,
       });
       addAggregate(questionTotalsByDateDiscipline, `${mapped.studyDate}|${mapped.disciplineId}`, {
         attempted: mapped.questionsAttempted,
@@ -150,6 +152,7 @@ async function buildReport(source: string, ownerEmail: string, validationDate: D
       disciplineId,
       topic: row.materia,
       subtopic: row.submateria ?? null,
+      comment: schema.materias.includes("comentario") ? row.comentario ?? null : null,
     }, { today: validationDate });
     if (!knownDisciplines.has(disciplineId)) pushInvalid(invalidRows, "materias", row.id, "discipline_id does not exist in disciplinas");
     else if (!result.success) pushInvalid(invalidRows, "materias", row.id, result.error.error.message);
@@ -217,10 +220,10 @@ async function buildReport(source: string, ownerEmail: string, validationDate: D
     },
     checksums: {
       disciplines: sortedChecksum(disciplines, ["id", "name", "block", "examItems", "displayOrder"]),
-      questionSessions: sortedChecksum(questionRows, ["sourceId", "studyDate", "disciplineId", "questionsAttempted", "correctAnswers", "guesses", "correctGuesses", "difficulty", "topic", "subtopic"]),
+      questionSessions: sortedChecksum(questionRows, ["sourceId", "studyDate", "disciplineId", "questionsAttempted", "correctAnswers", "guesses", "correctGuesses", "difficulty", "topic", "subtopic", "comment"]),
       disciplineNotes: sortedChecksum(noteRows, ["disciplineId", "length", "bodySha256"]),
       studyHours: sortedChecksum(hoursRows, ["sourceId", "studyDate", "hours"]),
-      studiedTopics: sortedChecksum(topicRows, ["sourceId", "studyDate", "disciplineId", "topic", "subtopic"]),
+      studiedTopics: sortedChecksum(topicRows, ["sourceId", "studyDate", "disciplineId", "topic", "subtopic", "comment"]),
       studyCycleEntries: sortedChecksum(cycleRows, ["sourceId", "position", "disciplineId", "hours"]),
     },
     idempotency: {

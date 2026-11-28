@@ -100,6 +100,7 @@ function mapQuestion(row: {
   difficulty: string | null;
   topic: string | null;
   subtopic: string | null;
+  comment: string | null;
   createdAt: string | null;
 }, userId: UserId): QuestionSession {
   return {
@@ -114,6 +115,7 @@ function mapQuestion(row: {
     difficulty: mapDifficulty(row.difficulty),
     topic: row.topic,
     subtopic: row.subtopic,
+    comment: row.comment,
     createdAt: row.createdAt ?? "",
   };
 }
@@ -148,10 +150,27 @@ export async function recordQuestionSession(_userId: UserId, input: QuestionSess
     difficulty: difficultyToLegacy[input.difficulty],
     topic: input.topic,
     subtopic: input.subtopic,
+    comment: input.comment,
     createdAt: sql`datetime('now')`,
   }).returning();
   if (!row) throw new Error("Question session insert did not return a row");
   return mapQuestion(row, _userId);
+}
+
+export async function updateQuestionSession(id: string, userId: UserId, input: QuestionSessionInput): Promise<QuestionSession | null> {
+  const [row] = await db.update(questionSessions).set({
+    studyDate: input.studyDate,
+    disciplineId: input.disciplineId,
+    questionsAttempted: input.questionsAttempted,
+    correctAnswers: input.correctAnswers,
+    guesses: input.guesses,
+    correctGuesses: input.correctGuesses,
+    difficulty: difficultyToLegacy[input.difficulty],
+    topic: input.topic,
+    subtopic: input.subtopic,
+    comment: input.comment,
+  }).where(eq(questionSessions.id, Number(id))).returning();
+  return row ? mapQuestion(row, userId) : null;
 }
 
 export async function deleteQuestionSession(id: string, _userId: UserId): Promise<boolean> {
@@ -175,6 +194,7 @@ export async function listQuestionSessions(userId: UserId, filters: QuestionSess
     difficulty: questionSessions.difficulty,
     topic: questionSessions.topic,
     subtopic: questionSessions.subtopic,
+    comment: questionSessions.comment,
     createdAt: questionSessions.createdAt,
     disciplineName: disciplines.name,
     block: disciplines.block,
@@ -266,9 +286,20 @@ export async function aggregateStudyHoursByDate(userId: UserId, filters: DateRan
 }
 
 export async function recordStudiedTopic(userId: UserId, input: StudiedTopicInput): Promise<StudiedTopic> {
-  const [row] = await db.insert(studiedTopics).values({ studyDate: input.studyDate, disciplineId: input.disciplineId, topic: input.topic, subtopic: input.subtopic, createdAt: sql`datetime('now')` }).returning();
+  const [row] = await db.insert(studiedTopics).values({ studyDate: input.studyDate, disciplineId: input.disciplineId, topic: input.topic, subtopic: input.subtopic, comment: input.comment, createdAt: sql`datetime('now')` }).returning();
   if (!row) throw new Error("Studied topic insert did not return a row");
-  return { id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), disciplineId: row.disciplineId as DisciplineId, topic: row.topic, subtopic: row.subtopic, createdAt: row.createdAt ?? "" };
+  return { id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), disciplineId: row.disciplineId as DisciplineId, topic: row.topic, subtopic: row.subtopic, comment: row.comment, createdAt: row.createdAt ?? "" };
+}
+
+export async function updateStudiedTopic(id: string, userId: UserId, input: StudiedTopicInput): Promise<StudiedTopic | null> {
+  const [row] = await db.update(studiedTopics).set({
+    studyDate: input.studyDate,
+    disciplineId: input.disciplineId,
+    topic: input.topic,
+    subtopic: input.subtopic,
+    comment: input.comment,
+  }).where(eq(studiedTopics.id, Number(id))).returning();
+  return row ? { id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), disciplineId: row.disciplineId as DisciplineId, topic: row.topic, subtopic: row.subtopic, comment: row.comment, createdAt: row.createdAt ?? "" } : null;
 }
 
 export async function listStudiedTopics(userId: UserId, filters: QuestionSessionFilters = {}, page = 1, pageSize = 25): Promise<PaginatedResult<StudiedTopic & { disciplineName: string }>> {
@@ -276,8 +307,8 @@ export async function listStudiedTopics(userId: UserId, filters: QuestionSession
   const safePageSize = Math.min(100, Math.max(1, Math.floor(pageSize)));
   const conditions = topicConditions(userId, filters);
   const [{ total }] = await db.select({ total: count() }).from(studiedTopics).where(conditions.length ? and(...conditions) : undefined);
-  const rows = await db.select({ id: studiedTopics.id, studyDate: studiedTopics.studyDate, disciplineId: studiedTopics.disciplineId, topic: studiedTopics.topic, subtopic: studiedTopics.subtopic, createdAt: studiedTopics.createdAt, disciplineName: disciplines.name }).from(studiedTopics).innerJoin(disciplines, eq(studiedTopics.disciplineId, disciplines.id)).where(conditions.length ? and(...conditions) : undefined).orderBy(desc(studiedTopics.studyDate), desc(studiedTopics.id)).limit(safePageSize).offset((safePage - 1) * safePageSize);
-  return { items: rows.map((row) => ({ id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), disciplineId: row.disciplineId as DisciplineId, topic: row.topic, subtopic: row.subtopic, createdAt: row.createdAt ?? "", disciplineName: row.disciplineName })), pageInfo: { page: safePage, pageSize: safePageSize, total: Number(total), hasNextPage: safePage * pageSize < Number(total) } };
+  const rows = await db.select({ id: studiedTopics.id, studyDate: studiedTopics.studyDate, disciplineId: studiedTopics.disciplineId, topic: studiedTopics.topic, subtopic: studiedTopics.subtopic, comment: studiedTopics.comment, createdAt: studiedTopics.createdAt, disciplineName: disciplines.name }).from(studiedTopics).innerJoin(disciplines, eq(studiedTopics.disciplineId, disciplines.id)).where(conditions.length ? and(...conditions) : undefined).orderBy(desc(studiedTopics.studyDate), desc(studiedTopics.id)).limit(safePageSize).offset((safePage - 1) * safePageSize);
+  return { items: rows.map((row) => ({ id: String(row.id), userId, studyDate: toDateOnly(row.studyDate), disciplineId: row.disciplineId as DisciplineId, topic: row.topic, subtopic: row.subtopic, comment: row.comment, createdAt: row.createdAt ?? "", disciplineName: row.disciplineName })), pageInfo: { page: safePage, pageSize: safePageSize, total: Number(total), hasNextPage: safePage * pageSize < Number(total) } };
 }
 
 export async function deleteStudiedTopic(id: string, _userId: UserId): Promise<boolean> {

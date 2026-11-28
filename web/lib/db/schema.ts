@@ -20,6 +20,7 @@ export const questionSessions = sqliteTable("registros", {
   difficulty: text("dificuldade"),
   topic: text("materia"),
   subtopic: text("submateria"),
+  comment: text("comentario"),
   createdAt: text("criado_em"),
 });
 
@@ -42,6 +43,7 @@ export const studiedTopics = sqliteTable("materias", {
   disciplineId: integer("disciplina_id").notNull(),
   topic: text("materia").notNull(),
   subtopic: text("submateria"),
+  comment: text("comentario"),
   createdAt: text("criado_em"),
 });
 

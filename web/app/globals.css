@@ -91,6 +91,11 @@ textarea {
   overflow-anchor: none;
 }
 
+.study-comment {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
 .responsive-data-table td[data-label] {
   min-width: 8rem;
 }

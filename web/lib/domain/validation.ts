@@ -22,6 +22,7 @@ import type {
 export const MAX_HOURS = 24;
 export const MAX_CYCLE_HOURS = 60;
 export const MAX_TEXT_LENGTH = 200;
+export const MAX_COMMENT_LENGTH = 2_000;
 export const MAX_HOURS_DECIMAL_PLACES = 2;
 
 export type ValidationResult<T> =
@@ -132,6 +133,7 @@ export function validateQuestionSession(
   const maxTextLength = options.allowLegacyTextLength ? Number.POSITIVE_INFINITY : MAX_TEXT_LENGTH;
   const topic = textOrNull(input.topic, "topic", fields, maxTextLength);
   const subtopic = textOrNull(input.subtopic, "subtopic", fields, maxTextLength);
+  const comment = textOrNull(input.comment, "comment", fields, MAX_COMMENT_LENGTH);
   if (!topic && subtopic) fields.subtopic = "Selecione uma materia antes do subtopico.";
   if (Object.keys(fields).length > 0 || disciplineId === null || !isDateOnly(studyDate) || !isDifficulty(difficulty)) {
     return invalid(fields);
@@ -155,6 +157,7 @@ export function validateQuestionSession(
       difficulty: validDifficulty,
       topic,
       subtopic,
+      comment,
     },
   };
 }
@@ -196,10 +199,11 @@ export function validateStudiedTopic(
   if (!topic) fields.topic = "Informe a materia estudada.";
   else if (topic.length > MAX_TEXT_LENGTH) fields.topic = `Use no maximo ${MAX_TEXT_LENGTH} caracteres.`;
   const subtopic = textOrNull(input.subtopic, "subtopic", fields);
+  const comment = textOrNull(input.comment, "comment", fields, MAX_COMMENT_LENGTH);
   if (Object.keys(fields).length > 0 || disciplineId === null || !isDateOnly(input.studyDate)) {
     return invalid(fields);
   }
-  return { success: true, data: { studyDate: input.studyDate, disciplineId, topic, subtopic } };
+  return { success: true, data: { studyDate: input.studyDate, disciplineId, topic, subtopic, comment } };
 }
 
 export function validateFilters(value: unknown): ValidationResult<FilterState> {
